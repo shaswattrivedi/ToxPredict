@@ -235,3 +235,10 @@ dist/
 
 # macOS
 .DS_Store
+
+# Processed ML artifacts (large numpy/parquet files)
+backend/ml/processed/*.npy
+backend/ml/processed/*.parquet
+
+# Vite cache
+frontend/.vite/
