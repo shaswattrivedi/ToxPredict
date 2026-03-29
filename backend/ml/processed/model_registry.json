@@ -1,0 +1,14 @@
+{
+  "NR-AR": "model_NR-AR.joblib",
+  "NR-AR-LBD": "model_NR-AR-LBD.joblib",
+  "NR-AhR": "model_NR-AhR.joblib",
+  "NR-Aromatase": "model_NR-Aromatase.joblib",
+  "NR-ER": "model_NR-ER.joblib",
+  "NR-ER-LBD": "model_NR-ER-LBD.joblib",
+  "NR-PPAR-gamma": "model_NR-PPAR-gamma.joblib",
+  "SR-ARE": "model_SR-ARE.joblib",
+  "SR-ATAD5": "model_SR-ATAD5.joblib",
+  "SR-HSE": "model_SR-HSE.joblib",
+  "SR-MMP": "model_SR-MMP.joblib",
+  "SR-p53": "model_SR-p53.joblib"
+}
