@@ -10,5 +10,25 @@
   "SR-ATAD5": "model_SR-ATAD5.joblib",
   "SR-HSE": "model_SR-HSE.joblib",
   "SR-MMP": "model_SR-MMP.joblib",
-  "SR-p53": "model_SR-p53.joblib"
+  "SR-p53": "model_SR-p53.joblib",
+  "meta_model": {
+    "type": "logistic_regression + isotonic_calibration",
+    "file": "meta_model.joblib",
+    "input_features": "12 base assay probabilities",
+    "cross_val_auc": 0.9162811235979039
+  },
+  "meta_model_assay_order": [
+    "NR-AR",
+    "NR-AR-LBD",
+    "NR-AhR",
+    "NR-Aromatase",
+    "NR-ER",
+    "NR-ER-LBD",
+    "NR-PPAR-gamma",
+    "SR-ARE",
+    "SR-ATAD5",
+    "SR-HSE",
+    "SR-MMP",
+    "SR-p53"
+  ]
 }
