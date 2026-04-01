@@ -18,19 +18,22 @@ const ASSAY_TOOLTIPS = {
 
 const RISK_STYLES = {
   High: {
-    card: 'border-red-300 bg-red-50 dark:bg-red-950/30',
-    badge: 'bg-red-100 text-red-700 border border-red-200',
+    card: 'border-red-300 bg-gradient-to-br from-red-50 to-rose-50 shadow-sm hover:shadow-md',
+    badge: 'bg-red-100 text-red-700 border border-red-200 font-semibold',
     bar: 'bg-red-500',
+    icon: '🔴',
   },
   Medium: {
-    card: 'border-amber-300 bg-amber-50 dark:bg-amber-950/30',
-    badge: 'bg-amber-100 text-amber-700 border border-amber-200',
+    card: 'border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm hover:shadow-md',
+    badge: 'bg-amber-100 text-amber-700 border border-amber-200 font-semibold',
     bar: 'bg-amber-500',
+    icon: '🟠',
   },
   Low: {
-    card: 'border-green-300 bg-green-50 dark:bg-green-950/30',
-    badge: 'bg-green-100 text-green-700 border border-green-200',
+    card: 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 shadow-sm hover:shadow-md',
+    badge: 'bg-green-100 text-green-700 border border-green-200 font-semibold',
     bar: 'bg-green-500',
+    icon: '🟢',
   },
 }
 
@@ -43,47 +46,54 @@ function ToxicityCard({ assay }) {
 
   return (
     <div
-      className={`rounded-lg border p-4 transition-transform duration-150 hover:scale-[1.02] ${styles.card}`}
+      className={`rounded-xl border p-5 transition-all duration-200 hover:scale-[1.02] cursor-pointer ${styles.card}`}
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <div className="relative min-w-0">
-          <div className="flex items-center gap-1.5">
-            <h3 className="truncate text-sm font-medium text-gray-900">{assay.display_name}</h3>
-            <span
-              className="relative inline-flex cursor-help items-center text-sm text-gray-500"
+      {/* Header */}
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">{styles.icon}</span>
+            <h3 className="truncate text-sm font-semibold text-gray-900">{assay.display_name}</h3>
+            <button
+              type="button"
+              className="ml-auto flex-shrink-0 relative inline-flex cursor-help items-center text-gray-400 hover:text-gray-600 transition"
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
             >
-              ℹ
+              ℹ️
               {showTooltip ? (
-                <div className="absolute left-0 top-5 z-50 max-w-xs rounded bg-gray-900 px-3 py-2 text-xs text-white shadow-lg">
+                <div className="absolute left-0 top-6 z-50 max-w-xs rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-xl border border-gray-800">
                   {tooltipText}
                 </div>
               ) : null}
-            </span>
+            </button>
           </div>
-          <p className="text-xs text-gray-500">{assay.assay_name}</p>
+          <p className="text-xs text-gray-600 font-mono">{assay.assay_name}</p>
         </div>
 
-        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${styles.badge}`}>
+        <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${styles.badge}`}>
           {assay.risk_level}
         </span>
       </div>
 
-      <div>
-        <div className="mb-1.5 flex items-center justify-between text-xs text-gray-600">
-          <span>Toxicity probability</span>
-          <span className="font-medium text-gray-700">{probabilityPercent.toFixed(1)}%</span>
+      {/* Progress Bar */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-semibold text-gray-700">Toxicity Probability</label>
+          <span className="text-sm font-bold text-gray-900">{probabilityPercent.toFixed(1)}%</span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded bg-gray-200">
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 border border-gray-300">
           <div
-            className={`h-full rounded ${styles.bar}`}
+            className={`h-full rounded-full transition-all duration-500 ${styles.bar}`}
             style={{ width: `${probabilityPercent}%` }}
           />
         </div>
       </div>
 
-      <p className="mt-3 text-xs text-gray-500">Confidence: {assay.confidence}</p>
+      {/* Footer */}
+      <div className="mt-4 pt-3 border-t border-gray-300/50 text-xs text-gray-600">
+        Confidence: <span className="font-semibold">{assay.confidence}</span>
+      </div>
     </div>
   )
 }
