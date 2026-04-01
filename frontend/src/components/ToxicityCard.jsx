@@ -60,7 +60,7 @@ function ToxicityCard({ assay }) {
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
             >
-              ℹ️
+              
               {showTooltip ? (
                 <div className="absolute left-0 top-6 z-50 max-w-xs rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-xl border border-gray-800">
                   {tooltipText}

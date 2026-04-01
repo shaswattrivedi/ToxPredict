@@ -145,7 +145,7 @@ function SHAPChart({ shapFeatures, assayName, assayDisplayName }) {
       {/* Interpretation */}
       <div className="mt-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
         <p className="text-xs text-blue-900 leading-relaxed">
-          <span className="font-semibold">💡 How to interpret:</span> Positive SHAP values (red) increase the probability of toxicity for this assay. Negative values (green) decrease it. The feature value shows the actual molecular property computed for your compound.
+          <span className="font-semibold">How to interpret:</span> Positive SHAP values (red) increase the probability of toxicity for this assay. Negative values (green) decrease it. The feature value shows the actual molecular property computed for your compound.
         </p>
       </div>
     </div>

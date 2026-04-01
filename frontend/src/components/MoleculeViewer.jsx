@@ -121,7 +121,7 @@ function MoleculeViewer({
       {/* Disclaimer Card */}
       <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
         <div className="flex gap-3">
-          <span className="text-lg shrink-0">ℹ️</span>
+          <span className="text-lg shrink-0"></span>
           <div className="text-xs text-blue-800">
             <p className="font-semibold mb-1">In Vitro Testing Context</p>
             <p className="leading-relaxed">
@@ -211,7 +211,7 @@ function MoleculeViewer({
               >
                 <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 cursor-help">
                   <div className="flex items-start gap-2">
-                    <span className="text-lg mt-0.5">⚠️</span>
+                    <span className="text-lg mt-0.5"></span>
                     <div>
                       <p className="text-xs font-semibold text-amber-900">{alert.alert_type}</p>
                       <p className="text-xs text-amber-800 mt-0.5">{alert.alert_name}</p>

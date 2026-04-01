@@ -11,7 +11,7 @@ function NarrativeSection({ narrative, topAssay }) {
       <div className="flex items-start gap-4">
         <span className="mt-1 shrink-0 text-2xl">🧠</span>
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-900">AI Biological Narrative</h3>
+          <h3 className="text-lg font-bold text-gray-900">Predictive Biological Narrative</h3>
           {topAssay && (
             <div className="mt-3">
               <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">

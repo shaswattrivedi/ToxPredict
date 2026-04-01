@@ -20,7 +20,7 @@ function Header({ title, tagline }) {
       `}</style>
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-2 animate-fade-in-up">
-          <span className="text-base">🧬</span>
+          <span className="text-base"></span>
           <h1 className="text-lg font-semibold tracking-tight text-gray-800">{title}</h1>
         </div>
         <p className="hidden text-xs text-gray-500 md:block">{tagline}</p>

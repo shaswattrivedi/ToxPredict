@@ -7,7 +7,7 @@ function InputCard({ onSubmit, isLoading, examples }) {
     <div className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-xl transition-all duration-200 hover:shadow-2xl">
       <SmallInfoCard>
         <p className="text-sm text-gray-600">
-          ✨ Analyze toxicity in seconds using AI
+          Execute in silico toxicity analysis
         </p>
       </SmallInfoCard>
       <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3 transition-all duration-200">

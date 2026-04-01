@@ -124,7 +124,7 @@ function CompoundSummary({
             </p>
 
             <p className="text-xs font-medium text-blue-700">
-              ⚠️ In vitro result - does not represent clinical toxicity at therapeutic doses
+              In vitro result - does not represent clinical toxicity at therapeutic doses
             </p>
           </div>
 
@@ -183,7 +183,7 @@ function CompoundSummary({
           <div className="flex gap-3">
             <span className="text-2xl shrink-0">📖</span>
             <div className="flex-1">
-              <h3 className="text-sm font-bold text-gray-900">AI-Generated Biological Narrative</h3>
+              <h3 className="text-sm font-bold text-gray-900">Predictive Biological Narrative</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-800 italic">{narrative}</p>
             </div>
           </div>

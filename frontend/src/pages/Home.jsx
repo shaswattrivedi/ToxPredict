@@ -49,7 +49,7 @@ function Home() {
           <div className="px-4 py-8 sm:px-6">
             <Hero
               title="Predict Chemical Toxicity Instantly"
-              subtitle="AI-powered molecular analysis from SMILES input. Get safety insights in seconds."
+              subtitle="High-throughput molecular analysis from SMILES input. Get safety insights in seconds."
             >
               <div className="mx-auto w-full max-w-2xl">
                 <InputCard
@@ -67,7 +67,7 @@ function Home() {
             <div className="space-y-6 lg:col-span-1">
               {/* Molecule Viewer */}
               {data ? (
-                <div className="sticky top-24">
+                <div className="">
                   <MoleculeViewer
                     imageB64={data.molecule_image_b64}
                     smiles={data.smiles}
@@ -102,7 +102,7 @@ function Home() {
                   </div>
                 </div>
                 <p className="animate-pulse text-center text-sm text-gray-500 font-medium">
-                  🔬 Analyzing molecular structure...
+                  Analyzing molecular structure...
                 </p>
               </div>
             ) : null}
@@ -111,7 +111,7 @@ function Home() {
             {isError ? (
               <Card className="border border-red-200 bg-gradient-to-br from-red-50 to-rose-50">
                 <div className="flex items-start gap-4">
-                  <span className="mt-1 shrink-0 text-3xl">⚠️</span>
+                  <span className="mt-1 shrink-0 text-3xl"></span>
                   <div className="flex-1">
                     <h3 className="font-semibold text-red-900 text-lg">
                       {error?.response?.data?.detail?.detail || 'Invalid SMILES string'}

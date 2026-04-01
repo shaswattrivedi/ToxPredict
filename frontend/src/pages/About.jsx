@@ -42,7 +42,7 @@ function About() {
         </Link>
         <h1 className="mt-3 text-3xl font-bold text-gray-900">About ToxPredict</h1>
         <p className="mt-1 text-sm text-gray-600">
-          AI-powered drug toxicity prediction for pharmaceutical research
+          Computational drug toxicity prediction for pharmaceutical research
         </p>
       </header>
 
@@ -82,7 +82,7 @@ function About() {
 
       <section className="mt-8 rounded border-l-4 border-amber-400 bg-amber-50 p-4">
         <h2 className="text-lg font-semibold text-amber-800">
-          ⚠️ Important Caveat: In Vitro vs Clinical Toxicity
+          Important Caveat: In Vitro vs Clinical Toxicity
         </h2>
         <p className="mt-2 text-sm text-amber-700 leading-relaxed">
           ToxPredict predicts toxicity as measured in the Tox21 high-throughput screening assays.

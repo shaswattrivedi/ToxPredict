@@ -69,11 +69,11 @@ function SMILESInput({ onSubmit, isLoading, examples }) {
 
       {error ? (
         <div className="rounded-lg bg-red-50 border border-red-200 p-3">
-          <p className="text-sm font-medium text-red-700">⚠️ {error}</p>
+          <p className="text-sm font-medium text-red-700">{error}</p>
         </div>
       ) : null}
 
-      <p className="text-xs text-gray-500">💡 Tip: Press Ctrl+Enter to analyze</p>
+      <p className="text-xs text-gray-500">Tip: Press Ctrl+Enter to analyze</p>
 
       <ExampleChips examples={examples} onSelect={fillExample} isLoading={isLoading} />
 
