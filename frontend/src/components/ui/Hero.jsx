@@ -36,8 +36,10 @@ function Hero({ title, subtitle, children }) {
           opacity: 0;
         }
       `}</style>
-      <h1 className="animate-fade-in-heading text-center text-4xl font-bold leading-tight tracking-tight text-gray-900 md:text-5xl">
-        {title}
+      <h1 className="animate-fade-in-heading text-center text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+        <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">
+          {title}
+        </span>
       </h1>
       {subtitle && (
         <p className="animate-fade-in-subtitle mx-auto max-w-2xl text-center text-base leading-relaxed text-gray-500">

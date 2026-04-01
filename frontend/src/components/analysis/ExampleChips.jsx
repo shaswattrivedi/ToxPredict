@@ -16,7 +16,7 @@ function ExampleChips({ examples, onSelect, isLoading }) {
             onClick={() => onSelect(example.smiles)}
             title={`${example.description}\n\nExpected risk: ${example.expected_risk}`}
             disabled={isLoading}
-            className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {example.name}
           </button>
