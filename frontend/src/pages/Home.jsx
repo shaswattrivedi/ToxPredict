@@ -6,6 +6,7 @@ import ToxicityCard from '../components/ToxicityCard'
 import SHAPChart from '../components/SHAPChart'
 import MoleculeViewer from '../components/MoleculeViewer'
 import RadarChart from '../components/RadarChart'
+import CompoundSummary from '../components/CompoundSummary'
 
 function Home() {
   const { predict, data, isLoading, isError, error } = usePrediction()
@@ -119,6 +120,19 @@ function Home() {
 
             {data ? (
               <div className="space-y-6">
+                <section>
+                  <CompoundSummary
+                    overallRisk={data.overall_risk}
+                    overallScore={data.overall_risk_score}
+                    toxicCount={data.toxic_assay_count}
+                    assayResults={data.assay_results}
+                    narrative={data.narrative}
+                    smiles={data.smiles}
+                    cached={data.cached}
+                    drugLikeness={data.drug_likeness}
+                  />
+                </section>
+
                 <section>
                   <h3 className="mb-1 text-lg font-semibold">Risk Profile Overview</h3>
                   <p className="mb-3 text-xs text-gray-500">
