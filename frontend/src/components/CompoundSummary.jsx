@@ -169,6 +169,36 @@ function CompoundSummary({
               ) : null}
             </div>
 
+            <p className="text-xs italic text-gray-600">
+              {narrativePreview || 'Narrative summary unavailable.'}
+            </p>
+
+            <p className="text-xs font-medium text-blue-700">
+              ⚠️ In vitro result - does not represent clinical toxicity at therapeutic doses
+            </p>
+          </div>
+
+          {/* Score Card */}
+          <div className={`rounded-xl border-2 p-5 text-center shadow-sm ${styles.scoreCard}`}>
+            <p className="text-xs font-semibold text-gray-700 mb-2">ENSEMBLE SCORE</p>
+            <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
+            <p className="text-xs text-gray-700 font-medium mt-1">% Risk</p>
+
+            <div className="mt-4 pt-4 border-t-2 border-gray-300 space-y-3 text-xs">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded bg-white/70 p-2">
+                  <p className="text-gray-600 text-[10px] font-medium">Nuclear Receptors</p>
+                  <p className="text-lg font-bold text-gray-900">{nrToxic}/7</p>
+                </div>
+                <div className="rounded bg-white/70 p-2">
+                  <p className="text-gray-600 text-[10px] font-medium">Stress Response</p>
+                  <p className="text-lg font-bold text-gray-900">{srToxic}/5</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="mt-4">
           <div className="relative h-7 overflow-visible rounded-md border border-gray-200 bg-white">
             <div className="flex h-full w-full overflow-hidden rounded-md">
@@ -228,26 +258,6 @@ function CompoundSummary({
               <p className="text-xs text-blue-800 font-medium">
                 ⚠️ <span>In vitro predictions only</span> — Do not represent clinical toxicity at therapeutic doses
               </p>
-            </div>
-          </div>
-
-          {/* Score Card */}
-          <div className={`rounded-xl border-2 p-5 text-center shadow-sm ${styles.scoreCard}`}>
-            <p className="text-xs font-semibold text-gray-700 mb-2">ENSEMBLE SCORE</p>
-            <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
-            <p className="text-xs text-gray-700 font-medium mt-1">% Risk</p>
-            
-            <div className="mt-4 pt-4 border-t-2 border-gray-300 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded bg-white/70 p-2">
-                  <p className="text-gray-600 text-[10px] font-medium">Nuclear Receptors</p>
-                  <p className="text-lg font-bold text-gray-900">{nrToxic}/6</p>
-                </div>
-                <div className="rounded bg-white/70 p-2">
-                  <p className="text-gray-600 text-[10px] font-medium">Stress Response</p>
-                  <p className="text-lg font-bold text-gray-900">{srToxic}/6</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
