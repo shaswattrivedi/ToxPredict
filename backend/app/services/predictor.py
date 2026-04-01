@@ -6,6 +6,7 @@ from pathlib import Path
 
 from app.services.mol_processor import (
 	extract_features,
+	mol_to_highlighted_image_b64,
 	mol_to_image_b64,
 	check_structural_alerts,
 	compute_drug_likeness,
@@ -250,7 +251,7 @@ def predict(smiles: str) -> PredictionResponse | ErrorResponse:
 			interpretation=dl["interpretation"],
 		)
 
-		img_b64 = mol_to_image_b64(smiles)
+		img_b64 = mol_to_highlighted_image_b64(smiles, shap_features)
 
 		processing_ms = (time.time() - start_time) * 1000
 

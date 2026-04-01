@@ -7,6 +7,7 @@ import logging
 import numpy as np
 from rdkit import Chem, RDLogger
 from rdkit.Chem import AllChem, Descriptors, Draw, QED, rdMolDescriptors
+from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Chem.FilterCatalog import FilterCatalog, FilterCatalogParams
 
 RDLogger.DisableLog("rdApp.*")
@@ -149,6 +150,94 @@ def mol_to_image_b64(smiles: str, size: tuple = (300, 300)) -> str:
     except Exception:
         logger.exception("Failed to render molecule image")
         return ""
+
+
+def mol_to_highlighted_image_b64(
+    smiles: str,
+    shap_features: list[dict],
+    size: tuple = (400, 300),
+) -> str:
+    """
+    Generates a 2D molecule image with atoms highlighted based on
+    SHAP-active Morgan fingerprint bits.
+
+    Red highlights = atoms contributing to increases_toxicity features.
+    Green highlights = atoms contributing to reduces_toxicity features.
+
+    Only morgan_bit_X features are atom-mapped; named descriptors are skipped.
+
+    Returns base64 PNG. Returns plain molecule image if no highlight bits are
+    available. Returns empty string if SMILES is invalid.
+    """
+    try:
+        mol = smiles_to_mol(smiles)
+        if mol is None:
+            return ""
+
+        bit_info: dict[int, list[tuple[int, int]]] = {}
+        AllChem.GetMorganFingerprintAsBitVect(
+            mol,
+            radius=2,
+            nBits=2048,
+            bitInfo=bit_info,
+        )
+
+        toxic_atoms: set[int] = set()
+        protective_atoms: set[int] = set()
+
+        for feature in shap_features:
+            name = str(feature.get("feature_name", ""))
+            direction = str(feature.get("direction", ""))
+
+            if not name.startswith("morgan_bit_"):
+                continue
+
+            try:
+                bit_num = int(name.split("_")[-1])
+            except Exception:
+                continue
+
+            if bit_num not in bit_info:
+                continue
+
+            for atom_idx, _radius in bit_info[bit_num]:
+                if direction == "increases_toxicity":
+                    toxic_atoms.add(atom_idx)
+                else:
+                    protective_atoms.add(atom_idx)
+
+        highlight_atom_colors: dict[int, tuple[float, float, float]] = {}
+        highlight_atoms: list[int] = []
+
+        for atom_idx in toxic_atoms:
+            highlight_atoms.append(atom_idx)
+            highlight_atom_colors[atom_idx] = (1.0, 0.4, 0.4)
+
+        for atom_idx in protective_atoms:
+            if atom_idx not in toxic_atoms:
+                highlight_atoms.append(atom_idx)
+                highlight_atom_colors[atom_idx] = (0.4, 0.9, 0.4)
+
+        drawer = rdMolDraw2D.MolDraw2DCairo(int(size[0]), int(size[1]))
+        drawer.drawOptions().addStereoAnnotation = False
+
+        if highlight_atoms:
+            drawer.DrawMolecule(
+                mol,
+                highlightAtoms=highlight_atoms,
+                highlightAtomColors=highlight_atom_colors,
+                highlightBonds=[],
+                highlightBondColors={},
+            )
+        else:
+            drawer.DrawMolecule(mol)
+
+        drawer.FinishDrawing()
+        png_data = drawer.GetDrawingText()
+        return base64.b64encode(png_data).decode("utf-8")
+    except Exception:
+        logger.exception("Failed to generate highlighted molecule image")
+        return mol_to_image_b64(smiles, size)
 
 
 def _get_pains_catalog() -> FilterCatalog:
