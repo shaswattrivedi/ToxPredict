@@ -169,31 +169,58 @@ function CompoundSummary({
               ) : null}
             </div>
 
-            {/* Risk Gauge */}
-            <div className="mt-4">
-              <div className="text-xs font-semibold text-gray-700 mb-2">Overall Ensemble Risk</div>
-              <div className="relative h-8 overflow-visible rounded-full border-2 border-gray-300 bg-white">
-                <div className="flex h-full w-full overflow-hidden">
-                  <div className="flex w-[40%] items-center justify-center bg-gradient-to-r from-green-200 to-green-100 text-[10px] font-bold text-green-900">
-                    LOW
-                  </div>
-                  <div className="flex w-[30%] items-center justify-center bg-gradient-to-r from-amber-200 to-amber-100 text-[10px] font-bold text-amber-900">
-                    MED
-                  </div>
-                  <div className="flex w-[30%] items-center justify-center bg-gradient-to-r from-red-200 to-red-100 text-[10px] font-bold text-red-900">
-                    HIGH
-                  </div>
-                </div>
-                <div
-                  className={`absolute -top-3 text-2xl transition-all ${styles.score}`}
-                  style={{ left: `calc(${scorePct}% - 12px)` }}
-                >
-                  ▼
-                </div>
+        <div className="mt-4">
+          <div className="relative h-7 overflow-visible rounded-md border border-gray-200 bg-white">
+            <div className="flex h-full w-full overflow-hidden rounded-md">
+              <div className="flex w-[40%] items-center justify-center bg-green-100 text-[11px] font-semibold text-green-700">
+                LOW (0-40%)
               </div>
-              <p className="mt-2 text-xs text-gray-600">
-                LOW (0-40%) = no toxicity signals | MED (40-70%) = borderline activity | HIGH (70-100%) = predicted toxic activity
-              </p>
+              <div className="flex w-[30%] items-center justify-center bg-amber-100 text-[11px] font-semibold text-amber-700">
+                MEDIUM (40-70%)
+              </div>
+              <div className="flex w-[30%] items-center justify-center bg-red-100 text-[11px] font-semibold text-red-700">
+                HIGH (70-100%)
+              </div>
+            </div>
+            <div
+              className="absolute -top-2 text-sm text-gray-700"
+              style={{ left: `calc(${scorePct}% - 6px)` }}
+              aria-label="Current ensemble score marker"
+            >
+              ▼
+            </div>
+          </div>
+          <p className="mt-2 text-xs text-gray-400">
+            LOW = model predicts no significant activity | MEDIUM = borderline signals present |
+            HIGH = predicted toxic activity at assay concentration
+          </p>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-gray-200 bg-white p-4">
+        <h3 className="text-base font-semibold text-gray-900">Drug-likeness Profile</h3>
+        <p className="text-xs text-gray-500">How suitable is this compound as a potential drug?</p>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <div className="relative flex items-center gap-2">
+              <h4 className="text-sm font-medium text-gray-900">Lipinski's Rule of Five</h4>
+              <button
+                type="button"
+                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 text-xs text-gray-600"
+                onMouseEnter={() => setShowLipinskiTip(true)}
+                onMouseLeave={() => setShowLipinskiTip(false)}
+              >
+                ?
+              </button>
+              {showLipinskiTip ? (
+                <div className="absolute left-0 top-7 z-50 max-w-sm rounded-lg border border-gray-200 bg-white p-3 text-xs text-gray-600 shadow-lg">
+                  Established in 1997 by Pfizer scientist Christopher Lipinski, these 5 rules
+                  predict whether a compound can be absorbed when taken orally. A compound that
+                  passes all rules is considered "drug-like" - likely to survive digestion and
+                  reach the bloodstream. Most approved oral drugs satisfy these rules.
+                </div>
+              ) : null}
             </div>
 
             {/* Disclaimer */}
