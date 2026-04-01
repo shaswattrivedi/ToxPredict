@@ -37,7 +37,7 @@ function MoleculeViewer({
       await navigator.clipboard.writeText(smilesText)
       setCopyState('Copied!')
       window.setTimeout(() => setCopyState('Copy SMILES'), 2000)
-    } catch (_error) {
+    } catch {
       setCopyState('Copy failed')
       window.setTimeout(() => setCopyState('Copy SMILES'), 2000)
     }
