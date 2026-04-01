@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+.bg-chemical-pattern {
+  background-image: url('./assets/chemical-pattern-clean.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

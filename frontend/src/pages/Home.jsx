@@ -49,10 +49,14 @@ function Home() {
     }`
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 text-gray-900">
-      <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 text-gray-900">
+      {/* Subtle Chemical Overlay */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-60 bg-chemical-pattern mix-blend-multiply transition-opacity duration-1000" aria-hidden="true" />
+      
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
-      <main className="pt-14">
+        <main className="flex-1 pt-20">
         <Container className="max-w-6xl">
           {/* Hero Section - strict order: title, subtitle, input card */}
           <div className="px-4 py-8 sm:px-6">
@@ -191,13 +195,14 @@ function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-16 border-t border-gray-200 bg-white py-8">
+      <footer className="mt-auto shrink-0 border-t border-gray-200/60 bg-white/80 backdrop-blur-md py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-gray-600">
-            ToxPredict © 2026 | Track A - CodeCure AI Hackathon @ IIT BHU SPIRIT
+          <p className="text-center text-sm font-medium text-gray-500">
+            ToxPredict © 2026 | Track A - CodeCure Hackathon @ IIT BHU SPIRIT
           </p>
         </div>
       </footer>
+      </div>
     </div>
   )
 }
