@@ -6,9 +6,9 @@ function ExampleChips({ examples, onSelect, isLoading }) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs font-semibold text-gray-600">Try examples:</p>
-      <div className="flex flex-wrap gap-2">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <p className="text-xs font-semibold text-gray-500">Try Examples:</p>
+      <div className="flex flex-wrap items-center justify-center gap-2">
         {examples.map((example) => (
           <button
             key={example.name}

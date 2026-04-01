@@ -89,61 +89,62 @@ function CompoundSummary({
   return (
     <div className="space-y-6">
       {/* Overall Risk Summary */}
-      <section className={`rounded-2xl p-6 border-2 ${styles.card}`}>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <section className={`rounded-2xl p-6 border ${styles.card} hover:shadow-md transition-shadow`}>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Content Column */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 flex flex-col justify-center space-y-5">
             {/* Risk Badge */}
             <div className="flex flex-wrap items-center gap-3">
-              <span className={`rounded-full px-5 py-2 text-xl font-bold ${styles.badge} shadow-md`}>
-                {String(overallRisk).toUpperCase()}
+              <span className={`rounded-md px-4 py-1.5 text-sm uppercase tracking-widest font-bold ${styles.badge} shadow-sm`}>
+                {String(overallRisk).toUpperCase()} RISK
               </span>
               {cached ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700">
-                  <span>⚡</span> Cached
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-white border border-gray-200 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 shadow-sm">
+                  <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div> Cached
                 </span>
               ) : null}
             </div>
 
             {/* Key Info */}
-            <div className="space-y-2">
-              <p className="text-sm font-semibold text-gray-900">
-                <span className="text-red-600 font-bold">{toxicCount}/12</span> assays flagged as toxic
-              </p>
-              {highestAssay ? (
-                <p className="text-sm text-gray-700">
-                  Primary concern: <span className="font-semibold">{highestAssay.display_name}</span> ({
-                    (Number(highestAssay.probability || 0) * 100).toFixed(0)}% probability
-                  )
+            <div className="grid grid-cols-2 gap-4 border-l-2 border-gray-200/50 pl-4 py-1 text-sm bg-white/40 p-3 rounded-r-lg">
+              <div>
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Endpoints Triggered</p>
+                <p className="text-gray-900 font-medium">
+                  <span className={`${toxicCount > 0 ? 'text-red-600 font-bold text-base' : 'text-gray-900 font-bold text-base'}`}>{toxicCount}</span> / 12 Assays
                 </p>
+              </div>
+              {highestAssay ? (
+                <div>
+                  <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Primary Concern</p>
+                  <p className="text-gray-900 font-medium">
+                    {highestAssay.display_name} <span className="text-gray-500">({(Number(highestAssay.probability || 0) * 100).toFixed(0)}%)</span>
+                  </p>
+                </div>
               ) : null}
             </div>
-
-            <p className="text-xs italic text-gray-600">
-              {narrativePreview || 'Narrative summary unavailable.'}
-            </p>
-
-            <p className="text-xs font-medium text-blue-700">
-              In vitro result - does not represent clinical toxicity at therapeutic doses
+            
+            <p className="text-xs font-medium text-gray-500 bg-white/60 p-2 rounded-md border border-gray-100 flex items-center gap-2">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 text-[10px] font-bold text-blue-700">i</span>
+              In vitro computational result - does not represent clinical toxicity at therapeutic doses.
             </p>
           </div>
 
           {/* Score Card */}
-          <div className={`rounded-xl border-2 p-5 text-center shadow-sm ${styles.scoreCard}`}>
-            <p className="text-xs font-semibold text-gray-700 mb-2">ENSEMBLE SCORE</p>
-            <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
-            <p className="text-xs text-gray-700 font-medium mt-1">% Risk</p>
+          <div className="flex flex-col justify-center items-center rounded-xl bg-white border border-gray-200/60 p-6 shadow-sm">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Ensemble Score</p>
+            <div className="flex items-baseline gap-1 my-2">
+              <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
+              <p className={`text-sm font-bold ${styles.score}`}>%</p>
+            </div>
 
-            <div className="mt-4 pt-4 border-t-2 border-gray-300 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded bg-white/70 p-2">
-                  <p className="text-gray-600 text-[10px] font-medium">Nuclear Receptors</p>
-                  <p className="text-lg font-bold text-gray-900">{nrToxic}/7</p>
-                </div>
-                <div className="rounded bg-white/70 p-2">
-                  <p className="text-gray-600 text-[10px] font-medium">Stress Response</p>
-                  <p className="text-lg font-bold text-gray-900">{srToxic}/5</p>
-                </div>
+            <div className="mt-4 w-full grid grid-cols-2 gap-3 border-t border-gray-100 pt-4 text-center">
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-400">Nuclear</p>
+                <p className="text-sm font-bold text-gray-800">{nrToxic}/7</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase font-bold text-gray-400">Stress</p>
+                <p className="text-sm font-bold text-gray-800">{srToxic}/5</p>
               </div>
             </div>
           </div>
@@ -179,12 +180,12 @@ function CompoundSummary({
 
       {/* Narrative */}
       {narrative ? (
-        <section className="rounded-2xl border border-purple-300 bg-gradient-to-br from-purple-50 to-blue-50 p-6 shadow-sm">
-          <div className="flex gap-3">
-            <span className="text-2xl shrink-0">📖</span>
+        <section className="rounded-2xl border border-gray-200/50 bg-white p-6 shadow-sm overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-purple-500"></div>
+          <div className="flex gap-4">
             <div className="flex-1">
-              <h3 className="text-sm font-bold text-gray-900">Predictive Biological Narrative</h3>
-              <p className="mt-2 text-sm leading-relaxed text-gray-800 italic">{narrative}</p>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 ml-1">Predictive Biological Narrative</h3>
+              <p className="text-[15px] leading-[1.65] text-gray-800 font-medium pl-1 border-l-2 border-indigo-100 ml-1">{narrative}</p>
             </div>
           </div>
         </section>

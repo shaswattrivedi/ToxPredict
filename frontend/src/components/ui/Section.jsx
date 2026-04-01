@@ -10,9 +10,9 @@ function Section({ children, className = '', title, subtitle }) {
   return (
     <section className={`${baseClasses} ${className}`}>
       {title && (
-        <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{title}</h2>
-          {subtitle && <p className="mt-2 text-gray-600 text-sm sm:text-base">{subtitle}</p>}
+        <div className="mb-6 sm:mb-8 border-b border-gray-200/60 pb-4">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">{title}</h2>
+          {subtitle && <p className="mt-1.5 text-gray-500 font-medium text-sm sm:text-sm">{subtitle}</p>}
         </div>
       )}
       {children}

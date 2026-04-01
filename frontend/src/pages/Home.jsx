@@ -55,7 +55,7 @@ function Home() {
                 <InputCard
                   onSubmit={handleSubmit}
                   isLoading={isLoading}
-                  examples={!data ? examples || [] : []}
+                  examples={examples || []}
                 />
               </div>
             </Hero>

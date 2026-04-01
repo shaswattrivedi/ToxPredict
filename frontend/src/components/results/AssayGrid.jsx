@@ -8,30 +8,46 @@ import ToxicityCard from '../ToxicityCard'
  */
 function AssayGrid({ nrAssays, srAssays }) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Nuclear Receptors Section */}
-      <Section
-        title="Nuclear Receptors (NR)"
-        subtitle="Hormone pathway activation assays (6 endpoints)"
-      >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="rounded-2xl border border-gray-200/60 bg-white p-6 shadow-sm">
+        <div className="mb-6 border-b border-gray-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-bold text-sm">
+              NR
+            </div>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-gray-900">Nuclear Receptors</h2>
+              <p className="mt-1 text-sm font-medium text-gray-500">Hormone pathway activation assays (7 endpoints)</p>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {nrAssays.map((assay) => (
             <ToxicityCard key={assay.assay_name} assay={assay} />
           ))}
         </div>
-      </Section>
+      </section>
 
       {/* Stress Response Section */}
-      <Section
-        title="Stress Response (SR)"
-        subtitle="Cellular stress indicators (6 endpoints)"
-      >
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="rounded-2xl border border-gray-200/60 bg-white p-6 shadow-sm">
+        <div className="mb-6 border-b border-gray-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100 text-purple-700 font-bold text-sm">
+              SR
+            </div>
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-gray-900">Stress Response</h2>
+              <p className="mt-1 text-sm font-medium text-gray-500">Cellular stress indicators (5 endpoints)</p>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           {srAssays.map((assay) => (
             <ToxicityCard key={assay.assay_name} assay={assay} />
           ))}
         </div>
-      </Section>
+      </section>
     </div>
   )
 }

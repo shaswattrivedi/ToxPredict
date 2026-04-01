@@ -48,23 +48,26 @@ function MoleculeViewer({
       {/* Molecule Structure Card */}
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {cached ? (
-          <div className="mb-3 flex items-center gap-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-full w-fit px-3 py-1">
-            <span>⚡</span>
-            <span>Cached result</span>
+          <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-gray-500 bg-gray-100/80 rounded-full w-fit px-2.5 py-1 backdrop-blur-sm border border-gray-200/50">
+            <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div>
+            <span>Cached</span>
           </div>
         ) : null}
 
         {/* Molecule Image */}
-        <div className="mx-auto mb-4 flex min-h-[200px] w-full max-w-xs items-center justify-center overflow-hidden rounded-xl border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4">
+        <div className="mx-auto mb-1 flex min-h-[200px] w-full max-w-xs flex-col items-center justify-center overflow-hidden rounded-xl border border-gray-200/60 bg-gradient-to-b from-white to-gray-50/50 p-4 shadow-sm">
           {imageB64 ? (
             <img
               src={`data:image/png;base64,${imageB64}`}
               alt="Molecule structure"
-              className="h-auto w-full object-contain transition-transform hover:scale-105"
+              className="mb-2 h-auto w-full object-contain transition-transform duration-300 hover:scale-[1.03]"
             />
           ) : (
             <span className="text-sm text-gray-500">Structure unavailable</span>
           )}
+          <p className="text-[10px] uppercase tracking-wider font-semibold text-gray-400 mt-2">
+            Standard CPK coloring (O=Red, N=Blue)
+          </p>
         </div>
 
         {/* SMILES Display */}

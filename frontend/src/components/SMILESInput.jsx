@@ -73,7 +73,6 @@ function SMILESInput({ onSubmit, isLoading, examples }) {
         </div>
       ) : null}
 
-      <p className="text-xs text-gray-500">Tip: Press Ctrl+Enter to analyze</p>
 
       <ExampleChips examples={examples} onSelect={fillExample} isLoading={isLoading} />
 
