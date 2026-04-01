@@ -86,36 +86,52 @@ function SHAPChart({ shapFeatures, assayName, assayDisplayName }) {
   }
 
   return (
-    <div className="space-y-3 rounded-lg border border-gray-200 bg-white p-4">
-      <div>
-        <h3 className="text-base font-semibold text-gray-900">Molecular Drivers - {assayDisplayName}</h3>
-        <p className="text-xs text-gray-500">
-          Red bars increase toxicity risk. Green bars reduce it. Values are SHAP attributions.
-        </p>
-        <p className="mt-1 text-[11px] text-gray-400">Assay: {assayName}</p>
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-gray-900">Molecular Drivers</h3>
+        <p className="text-sm text-gray-600 mt-1">{assayDisplayName} — Top 10 features by SHAP importance</p>
+        <p className="text-xs text-gray-500 mt-2 font-mono">Assay: {assayName}</p>
       </div>
 
-      <ResponsiveContainer width="100%" height={Math.max(320, features.length * 38)}>
+      {/* Legend */}
+      <div className="mb-4 flex gap-4">
+        <div className="flex items-center gap-2">
+          <div className="h-2.5 w-6 rounded bg-red-500" />
+          <span className="text-xs font-medium text-gray-700">Increases Toxicity</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-2.5 w-6 rounded bg-green-500" />
+          <span className="text-xs font-medium text-gray-700">Reduces Toxicity</span>
+        </div>
+      </div>
+
+      <ResponsiveContainer width="100%" height={Math.max(320, features.length * 40)}>
         <BarChart
           data={features}
           layout="vertical"
-          margin={{ top: 5, right: 60, left: 160, bottom: 5 }}
+          margin={{ top: 5, right: 60, left: 160, bottom: 40 }}
         >
-          <CartesianGrid horizontal={false} strokeDasharray="3 3" opacity={0.3} />
-          <ReferenceLine x={0} stroke="#9CA3AF" strokeDasharray="4 3" />
+          <CartesianGrid horizontal={false} strokeDasharray="4 3" opacity={0.2} />
+          <ReferenceLine x={0} stroke="#D1D5DB" strokeWidth={1.5} />
           <XAxis
             type="number"
             tickFormatter={(v) => Number(v).toFixed(2)}
+            tick={{ fontSize: 11, fill: '#6B7280' }}
             label={{
-              value: '<- reduces toxicity | increases toxicity ->',
+              value: 'Reduces toxicity ← | → Increases toxicity',
               position: 'insideBottom',
-              offset: -2,
-              style: { fontSize: 11, fill: '#6B7280' },
+              offset: -30,
+              style: { fontSize: 11, fill: '#6B7280', fontWeight: 500 },
             }}
           />
-          <YAxis dataKey="displayName" type="category" width={155} tick={{ fontSize: 11 }} />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(107, 114, 128, 0.08)' }} />
-          <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+          <YAxis
+            dataKey="displayName"
+            type="category"
+            width={155}
+            tick={{ fontSize: 11, fill: '#374151', fontWeight: 500 }}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(59, 130, 246, 0.08)' }} />
+          <Bar dataKey="value" radius={[0, 6, 6, 0]} isAnimationActive={true} animationDuration={500}>
             {features.map((entry) => (
               <Cell
                 key={`${entry.fullName}-${entry.rank}`}
@@ -125,6 +141,13 @@ function SHAPChart({ shapFeatures, assayName, assayDisplayName }) {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+
+      {/* Interpretation */}
+      <div className="mt-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
+        <p className="text-xs text-blue-900 leading-relaxed">
+          <span className="font-semibold">💡 How to interpret:</span> Positive SHAP values (red) increase the probability of toxicity for this assay. Negative values (green) decrease it. The feature value shows the actual molecular property computed for your compound.
+        </p>
+      </div>
     </div>
   )
 }

@@ -1,26 +1,32 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { usePrediction, useExamples } from '../hooks/usePrediction'
-import SMILESInput from '../components/SMILESInput'
-import ToxicityCard from '../components/ToxicityCard'
-import SHAPChart from '../components/SHAPChart'
 import MoleculeViewer from '../components/MoleculeViewer'
-import RadarChart from '../components/RadarChart'
 import CompoundSummary from '../components/CompoundSummary'
+import Card from '../components/ui/Card'
+import Container from '../components/ui/Container'
+import Header from '../components/ui/Header'
+import Hero from '../components/ui/Hero'
+import InputCard from '../components/analysis/InputCard'
+import RiskSummary from '../components/results/RiskSummary'
+import AssayGrid from '../components/results/AssayGrid'
+import InsightsSection from '../components/results/InsightsSection'
 
 function Home() {
   const { predict, data, isLoading, isError, error } = usePrediction()
   const { data: examples } = useExamples()
+  const [showResults, setShowResults] = useState(false)
 
   const handleSubmit = (smiles) => {
     predict(smiles)
+    setShowResults(true)
   }
 
   useEffect(() => {
-    if (data && window.innerWidth < 768) {
+    if (data && showResults && window.innerWidth < 768) {
       document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [data])
+  }, [data, showResults])
 
   const topAssay =
     data?.assay_results?.length > 0
@@ -34,209 +40,143 @@ function Home() {
   const srAssays = data?.assay_results?.filter((r) => r.category === 'Stress Response') || []
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <header className="sticky top-0 z-10 w-full border-b bg-white/95 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-bold">🧬 ToxPredict</h1>
-          <p className="hidden text-xs text-gray-400 md:block">
-            Track A - CodeCure AI Hackathon @ IIT BHU SPIRIT 2026
-          </p>
-        </div>
-        <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-purple-600" />
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-emerald-100 text-gray-900">
+      <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div className="space-y-6 md:col-span-1">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Drug Toxicity Predictor</h2>
-              <p className="mt-1 mb-6 text-sm text-gray-500">
-                Enter a SMILES molecular structure to predict toxicity across 12 biological assays
-                using a two-stage ML ensemble with SHAP explainability.
-              </p>
-            </div>
-
-            <SMILESInput
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              examples={examples || []}
-            />
-
-            {data ? (
-              <MoleculeViewer
-                imageB64={data.molecule_image_b64}
-                smiles={data.smiles}
-                overallRisk={data.overall_risk}
-                overallScore={data.overall_risk_score}
-                toxicCount={data.toxic_assay_count}
-                processingTimeMs={data.processing_time_ms}
-                drugLikeness={data.drug_likeness}
-                structuralAlerts={data.structural_alerts}
-                hasStructuralAlerts={data.has_structural_alerts}
-                cached={data.cached}
-              />
-            ) : null}
+      <main className="pt-14">
+        <Container className="max-w-5xl">
+          {/* Hero Section - strict order: title, subtitle, input card */}
+          <div className="px-4 py-8 sm:px-6">
+            <Hero
+              title="Predict Chemical Toxicity Instantly"
+              subtitle="AI-powered molecular analysis from SMILES input. Get safety insights in seconds."
+            >
+              <div className="mx-auto w-full max-w-2xl">
+                <InputCard
+                  onSubmit={handleSubmit}
+                  isLoading={isLoading}
+                  examples={!data ? examples || [] : []}
+                />
+              </div>
+            </Hero>
           </div>
 
-          <div id="results-section" className="md:col-span-2">
-            {isLoading ? (
-              <>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {Array.from({ length: 12 }).map((_, idx) => (
-                    <div
-                      key={`skeleton-${idx}`}
-                      className="h-36 animate-pulse rounded-lg border border-gray-200 bg-gray-100"
-                    />
-                  ))}
-                </div>
-                <p className="mt-4 animate-pulse text-center text-sm text-gray-400">
-                  Analyzing molecular structure...
-                </p>
-              </>
-            ) : null}
-
-            {isError ? (
-              <div className="rounded-xl border border-red-200 bg-red-50 p-4">
-                <p className="font-medium text-red-700">
-                  ⚠️ {error?.response?.data?.detail?.detail || 'Invalid SMILES string'}
-                </p>
-                <p className="mt-2 text-sm text-gray-600">Please check your SMILES and try again.</p>
-                <p className="mt-1 text-sm text-gray-500">
-                  Example: CC(=O)Oc1ccccc1C(=O)O (Aspirin)
-                </p>
-              </div>
-            ) : null}
-
-            {!data && !isLoading && !isError ? (
-              <div className="rounded-xl border-2 border-dashed border-gray-200 p-12 text-center">
-                <p className="text-6xl">🔬</p>
-                <p className="mt-4 text-lg text-gray-400">Enter a SMILES string to begin</p>
-                <p className="mt-2 text-sm text-gray-300">
-                  Results will show toxicity predictions across 12 assays with AI-powered molecular
-                  explanations.
-                </p>
-              </div>
-            ) : null}
-
-            {data ? (
-              <div className="space-y-6">
-                <section>
-                  <CompoundSummary
+          {/* Main Grid - Results + Molecule Viewer */}
+          <div className="grid grid-cols-1 gap-8 xl:gap-12 lg:grid-cols-3">
+            {/* Left Panel - Molecule Viewer (only on desktop, after input) */}
+            <div className="space-y-6 lg:col-span-1">
+              {/* Molecule Viewer */}
+              {data ? (
+                <div className="sticky top-24">
+                  <MoleculeViewer
+                    imageB64={data.molecule_image_b64}
+                    smiles={data.smiles}
                     overallRisk={data.overall_risk}
                     overallScore={data.overall_risk_score}
                     toxicCount={data.toxic_assay_count}
-                    assayResults={data.assay_results}
-                    narrative={data.narrative}
-                    smiles={data.smiles}
-                    cached={data.cached}
+                    processingTimeMs={data.processing_time_ms}
                     drugLikeness={data.drug_likeness}
+                    structuralAlerts={data.structural_alerts}
+                    hasStructuralAlerts={data.has_structural_alerts}
+                    cached={data.cached}
                   />
-                </section>
+                </div>
+              ) : null}
+            </div>
 
-                <section>
-                  <h3 className="mb-1 text-lg font-semibold">Risk Profile Overview</h3>
-                  <p className="mb-3 text-xs text-gray-500">
-                    All 12 assay endpoints visualized simultaneously
-                  </p>
-                  <div className="md:hidden">
-                    <RadarChart assayResults={data.assay_results} height={280} />
-                  </div>
-                  <div className="hidden md:block">
-                    <RadarChart assayResults={data.assay_results} />
-                  </div>
-                </section>
-
-                <section className="mt-6">
-                  <h4 className="mb-2 text-sm font-medium text-gray-600">Nuclear Receptors (NR)</h4>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {nrAssays.map((assay) => (
-                      <ToxicityCard key={assay.assay_name} assay={assay} />
+            {/* Right Panel - Results */}
+            <div id="results-section" className="lg:col-span-2">
+            {/* Loading State */}
+            {isLoading ? (
+              <div className="space-y-8 animate-fade-in">
+                <div className="h-64 animate-pulse rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200" />
+                <div className="space-y-4">
+                  <div className="h-32 animate-pulse rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200" />
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {Array.from({ length: 4 }).map((_, idx) => (
+                      <div
+                        key={`skeleton-${idx}`}
+                        className="h-40 animate-pulse rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200"
+                      />
                     ))}
                   </div>
+                </div>
+                <p className="animate-pulse text-center text-sm text-gray-500 font-medium">
+                  🔬 Analyzing molecular structure...
+                </p>
+              </div>
+            ) : null}
 
-                  <h4 className="mt-4 mb-2 text-sm font-medium text-gray-600">
-                    Stress Response Pathways (SR)
-                  </h4>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {srAssays.map((assay) => (
-                      <ToxicityCard key={assay.assay_name} assay={assay} />
-                    ))}
+            {/* Error State */}
+            {isError ? (
+              <Card className="border border-red-200 bg-gradient-to-br from-red-50 to-rose-50">
+                <div className="flex items-start gap-4">
+                  <span className="mt-1 shrink-0 text-3xl">⚠️</span>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-red-900 text-lg">
+                      {error?.response?.data?.detail?.detail || 'Invalid SMILES string'}
+                    </h3>
+                    <p className="mt-2 text-sm text-red-700 leading-relaxed">
+                      Please verify your SMILES format and try again.
+                    </p>
+                    <div className="mt-4 rounded-lg bg-white/50 border border-red-200 p-3">
+                      <p className="text-xs text-red-600 font-mono font-semibold">
+                        Example: CC(=O)Oc1ccccc1C(=O)O (Aspirin)
+                      </p>
+                    </div>
                   </div>
-                </section>
+                </div>
+              </Card>
+            ) : null}
 
-                <section className="mt-6 rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-purple-50 p-4">
-                  <h3 className="text-base font-semibold">🧠 AI Biological Narrative</h3>
-                  {topAssay ? (
-                    <span className="mt-1 inline-block rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
-                      Explaining: {topAssay.display_name}
-                    </span>
-                  ) : null}
-                  <p className="mt-2 text-sm leading-relaxed text-gray-700 italic">{data.narrative}</p>
-                </section>
+            {/* Results Content */}
+            {data ? (
+              <div className="space-y-8">
+                {/* Compound Summary */}
+                <CompoundSummary
+                  overallRisk={data.overall_risk}
+                  overallScore={data.overall_risk_score}
+                  toxicCount={data.toxic_assay_count}
+                  assayResults={data.assay_results}
+                  narrative={data.narrative}
+                  smiles={data.smiles}
+                  cached={data.cached}
+                  drugLikeness={data.drug_likeness}
+                />
 
-                <section className="mt-6">
-                  <SHAPChart
-                    shapFeatures={data.top_shap_features}
-                    assayName={topAssay?.assay_name || ''}
-                    assayDisplayName={topAssay?.display_name || 'Top Assay'}
-                  />
-                </section>
+                {/* Risk Summary */}
+                <RiskSummary
+                  overallRisk={data.overall_risk}
+                  overallScore={data.overall_risk_score}
+                  toxicCount={data.toxic_assay_count}
+                  cached={data.cached}
+                />
 
-                <section className="mt-6 grid grid-cols-3 gap-3">
-                  <div className="rounded-lg border bg-white p-3 text-center">
-                    <p className="text-lg">🔬</p>
-                    <p className="text-2xl font-bold">12</p>
-                    <p className="mt-1 text-xs text-gray-500">Assays Analyzed</p>
-                  </div>
-                  <div className="rounded-lg border bg-white p-3 text-center">
-                    <p className="text-lg">⚠️</p>
-                    <p className="text-2xl font-bold">{data.toxic_assay_count}</p>
-                    <p className="mt-1 text-xs text-gray-500">Flagged Toxic</p>
-                  </div>
-                  <div className="rounded-lg border bg-white p-3 text-center">
-                    <p className="text-lg">🎯</p>
-                    <p className="text-2xl font-bold">{data.overall_risk_score.toFixed(2)}</p>
-                    <p className="mt-1 text-xs text-gray-500">Ensemble Score</p>
-                  </div>
-                </section>
+                {/* Assay Grid */}
+                <AssayGrid
+                  assayResults={data.assay_results}
+                  nrAssays={nrAssays}
+                  srAssays={srAssays}
+                />
+
+                {/* Insights Section */}
+                <InsightsSection
+                  assayResults={data.assay_results}
+                  topAssay={topAssay}
+                  shapFeatures={data.top_shap_features}
+                />
               </div>
             ) : null}
           </div>
         </div>
+        </Container>
       </main>
 
-      <footer className="mt-12 border-t py-6">
-        <div className="mx-auto max-w-7xl px-4 text-center text-xs text-gray-400">
-          <p>
-            ToxPredict - Built for CodeCure AI Hackathon, SPIRIT 2026 @ IIT BHU Varanasi
-          </p>
-          <p className="mt-1">
-            Two-stage XGBoost ensemble | Mean ROC-AUC: 0.835 (12 assays) | Meta-model ROC-AUC:
-            0.916
-          </p>
-          <p className="mt-1">Trained on Tox21 Dataset (~7,800 compounds)</p>
-          <p className="mt-2 space-x-4">
-            <a
-              href="https://github.com/shaswattrivedi/ToxPredict"
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-500 hover:text-blue-600"
-            >
-              GitHub Repo
-            </a>
-            <a
-              href="http://localhost:8000/docs"
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-500 hover:text-blue-600"
-            >
-              API Docs
-            </a>
-          </p>
-          <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-gray-300">
-            Predictions reflect in vitro toxicity at Tox21 assay concentrations and do not
-            represent clinical risk at therapeutic doses. Context-dependent interpretation is
-            required.
+      {/* Footer */}
+      <footer className="mt-16 border-t border-gray-200 bg-white py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm text-gray-600">
+            ToxPredict © 2026 | Track A - CodeCure AI Hackathon @ IIT BHU SPIRIT
           </p>
         </div>
       </footer>

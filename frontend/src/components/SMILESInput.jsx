@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import ExampleChips from './analysis/ExampleChips'
+import AnalyzeButton from './analysis/AnalyzeButton'
 
 function SMILESInput({ onSubmit, isLoading, examples }) {
   const [smiles, setSmiles] = useState('')
@@ -47,53 +49,35 @@ function SMILESInput({ onSubmit, isLoading, examples }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full space-y-3">
-      <textarea
-        value={smiles}
-        onChange={(event) => setSmiles(event.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Enter SMILES string (e.g. CC(=O)Oc1ccccc1C(=O)O)"
-        className="min-h-[80px] w-full resize-y rounded-lg border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-        disabled={isLoading}
-      />
-
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-
-      <p className="text-xs text-gray-400">Press Ctrl+Enter to analyze</p>
-
-      <div className="flex flex-wrap gap-2">
-        {examples.map((example) => (
-          <button
-            key={example.name}
-            type="button"
-            title={`${example.description} | Expected risk: ${example.expected_risk}`}
-            onClick={() => fillExample(example.smiles)}
-            className="rounded-full border border-gray-300 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700 transition hover:border-gray-400 hover:bg-gray-100"
-            disabled={isLoading}
-          >
-            {example.name}
-          </button>
-        ))}
+    <form onSubmit={handleSubmit} className="w-full space-y-4">
+      <div>
+        <label className="block text-sm font-semibold text-gray-900 mb-2">
+          Enter SMILES String
+        </label>
+        <p className="text-xs text-gray-600 mb-3">
+          SMILES is a standard notation for molecular structures
+        </p>
+        <textarea
+          value={smiles}
+          onChange={(event) => setSmiles(event.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="e.g., CC(=O)Oc1ccccc1C(=O)O"
+          className="min-h-[120px] w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 outline-none transition-all duration-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-300 disabled:bg-gray-50 disabled:text-gray-500"
+          disabled={isLoading}
+        />
       </div>
 
-      <p className="text-xs text-gray-400">
-        SMILES (Simplified Molecular-Input Line-Entry System) is a standard text notation for representing molecular structures.
-      </p>
+      {error ? (
+        <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+          <p className="text-sm font-medium text-red-700">⚠️ {error}</p>
+        </div>
+      ) : null}
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
-      >
-        {isLoading ? (
-          <>
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            Analyzing...
-          </>
-        ) : (
-          'Analyze Compound'
-        )}
-      </button>
+      <p className="text-xs text-gray-500">💡 Tip: Press Ctrl+Enter to analyze</p>
+
+      <ExampleChips examples={examples} onSelect={fillExample} isLoading={isLoading} />
+
+      <AnalyzeButton isLoading={isLoading} />
     </form>
   )
 }
@@ -108,7 +92,11 @@ SMILESInput.propTypes = {
       description: PropTypes.string.isRequired,
       expected_risk: PropTypes.string.isRequired,
     }),
-  ).isRequired,
+  ),
+}
+
+SMILESInput.defaultProps = {
+  examples: [],
 }
 
 export default SMILESInput

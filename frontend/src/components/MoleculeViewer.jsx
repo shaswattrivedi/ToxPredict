@@ -2,9 +2,9 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const OVERALL_RISK_STYLES = {
-  HIGH: 'bg-red-500 text-white animate-pulse',
-  MEDIUM: 'bg-amber-500 text-white',
-  LOW: 'bg-green-500 text-white',
+  HIGH: 'bg-red-600 text-white shadow-lg shadow-red-200 animate-pulse',
+  MEDIUM: 'bg-amber-600 text-white shadow-lg shadow-amber-200',
+  LOW: 'bg-green-600 text-white shadow-lg shadow-green-200',
 }
 
 function MoleculeViewer({
@@ -44,116 +44,190 @@ function MoleculeViewer({
   }
 
   return (
-    <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="relative rounded-lg border border-gray-200 bg-white p-4">
+    <div className="space-y-4">
+      {/* Molecule Structure Card */}
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         {cached ? (
-          <span className="absolute right-3 top-3 rounded-full bg-gray-100 px-2 py-1 text-[11px] font-medium text-gray-600">
-            ⚡ Cached result
-          </span>
+          <div className="mb-3 flex items-center gap-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-full w-fit px-3 py-1">
+            <span>⚡</span>
+            <span>Cached result</span>
+          </div>
         ) : null}
 
-        <div className="mx-auto flex min-h-[180px] w-full max-w-[280px] items-center justify-center overflow-hidden rounded border border-gray-200 bg-white">
+        {/* Molecule Image */}
+        <div className="mx-auto mb-4 flex min-h-[200px] w-full max-w-xs items-center justify-center overflow-hidden rounded-xl border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4">
           {imageB64 ? (
             <img
               src={`data:image/png;base64,${imageB64}`}
               alt="Molecule structure"
-              className="h-auto w-full object-contain"
+              className="h-auto w-full object-contain transition-transform hover:scale-105"
             />
           ) : (
-            <span className="text-xs text-gray-500">Structure unavailable</span>
+            <span className="text-sm text-gray-500">Structure unavailable</span>
           )}
         </div>
 
-        <div className="mt-3 flex items-center gap-2">
-          <p className="flex-1 truncate font-mono text-xs text-gray-600" title={smilesText}>
-            {shortSmiles || 'No SMILES provided'}
+        {/* SMILES Display */}
+        <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 mb-3">
+          <p className="text-xs font-semibold text-gray-700 mb-1.5">SMILES Notation:</p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 overflow-auto text-xs text-gray-700 font-mono break-all">
+              {smilesText || 'No SMILES provided'}
+            </code>
+            <button
+              type="button"
+              onClick={handleCopySmiles}
+              className="shrink-0 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-100 active:scale-95"
+            >
+              {copyState}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Risk Summary Card */}
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">Overall Assessment</h3>
+        
+        <div className="space-y-3">
+          {/* Risk Badge */}
+          <div>
+            <p className="text-xs font-semibold text-gray-700 mb-2">Overall Risk Level</p>
+            <div className={`inline-flex rounded-full px-5 py-2 text-base font-bold ${riskClass}`}>
+              {riskKey === 'HIGH' && '🔴'} {riskKey === 'MEDIUM' && '🟠'} {riskKey === 'LOW' && '🟢'} {riskKey || 'LOW'}
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
+              <p className="text-xs text-gray-600">Flagged Assays</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">{toxicCount}/12</p>
+            </div>
+            <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
+              <p className="text-xs text-gray-600">Ensemble Score</p>
+              <p className="mt-1 text-2xl font-bold text-gray-900">{Number(overallScore || 0).toFixed(2)}</p>
+            </div>
+          </div>
+
+          {/* Processing Time */}
+          <p className="text-xs text-gray-600 text-center">⏱️ Analyzed in {Number(processingTimeMs || 0).toFixed(0)}ms</p>
+        </div>
+      </div>
+
+      {/* Disclaimer Card */}
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
+        <div className="flex gap-3">
+          <span className="text-lg shrink-0">ℹ️</span>
+          <div className="text-xs text-blue-800">
+            <p className="font-semibold mb-1">In Vitro Testing Context</p>
+            <p className="leading-relaxed">
+              Predictions reflect toxicity at Tox21 assay concentrations. Clinical risk assessment requires dose-response data and pharmacokinetics.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Drug-likeness Card */}
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-gray-900 mb-4">Drug-likeness Profile</h3>
+
+        {/* Lipinski Compliance */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-gray-700">Lipinski Rule of Five</p>
+            {drugLikeness?.lipinski_pass ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                <span>✓</span> Compliant
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                <span>✗</span> {(drugLikeness?.violations || []).length} Violation(s)
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* QED Score */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-gray-700">QED Score</p>
+            <span className="text-sm font-bold text-gray-900">{Number(drugLikeness?.qed_score ?? 0).toFixed(3)}</span>
+          </div>
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 border border-gray-300">
+            <div
+              className={`h-full rounded-full transition-all ${qedBarClass}`}
+              style={{ width: `${qedPercent}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Properties Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-lg bg-gray-50 p-3 border border-gray-200">
+            <p className="text-xs text-gray-600 font-semibold">Molecular Weight</p>
+            <p className="mt-1 text-sm font-bold text-gray-900">{Number(drugLikeness?.molecular_weight ?? 0).toFixed(1)} Da</p>
+            <p className="text-xs text-gray-500 mt-0.5">≤ 500</p>
+          </div>
+          <div className="rounded-lg bg-gray-50 p-3 border border-gray-200">
+            <p className="text-xs text-gray-600 font-semibold">LogP</p>
+            <p className="mt-1 text-sm font-bold text-gray-900">{Number(drugLikeness?.log_p ?? 0).toFixed(2)}</p>
+            <p className="text-xs text-gray-500 mt-0.5">≤ 5</p>
+          </div>
+          <div className="rounded-lg bg-gray-50 p-3 border border-gray-200">
+            <p className="text-xs text-gray-600 font-semibold">H-Bond Donors</p>
+            <p className="mt-1 text-sm font-bold text-gray-900">{Number(drugLikeness?.h_bond_donors ?? 0)}</p>
+            <p className="text-xs text-gray-500 mt-0.5">≤ 5</p>
+          </div>
+          <div className="rounded-lg bg-gray-50 p-3 border border-gray-200">
+            <p className="text-xs text-gray-600 font-semibold">H-Bond Acceptors</p>
+            <p className="mt-1 text-sm font-bold text-gray-900">{Number(drugLikeness?.h_bond_acceptors ?? 0)}</p>
+            <p className="text-xs text-gray-500 mt-0.5">≤ 10</p>
+          </div>
+        </div>
+
+        {drugLikeness?.interpretation ? (
+          <p className="mt-4 text-xs italic text-gray-700 bg-gray-50 rounded-lg p-3 border border-gray-200">
+            {drugLikeness.interpretation}
           </p>
-          <button
-            type="button"
-            onClick={handleCopySmiles}
-            className="rounded border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
-          >
-            {copyState}
-          </button>
-        </div>
+        ) : null}
       </div>
 
-      <div className="space-y-2 text-center">
-        <div className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold ${riskClass}`}>
-          Overall Risk: {riskKey || 'LOW'}
-        </div>
-        <p className="text-sm text-gray-700">{toxicCount} of 12 assays flagged</p>
-        <p className="text-xs text-gray-500">Ensemble score: {Number(overallScore || 0).toFixed(2)}</p>
-        <p className="text-xs text-gray-500">Analyzed in {Number(processingTimeMs || 0).toFixed(0)}ms</p>
-      </div>
-
-      <div className="mt-2 rounded border border-blue-200 bg-blue-50 p-2">
-        <p className="text-xs text-blue-700">
-          <span className="mr-1 text-blue-500">ℹ️</span>
-          ⚠️ Predictions reflect in vitro toxicity at Tox21 assay concentrations and do not represent clinical risk at therapeutic doses. Context-dependent interpretation is required.
-        </p>
-      </div>
-
-      <div className="rounded-lg border border-gray-200 p-3">
-        <h3 className="text-sm font-medium text-gray-900">Drug-likeness Assessment</h3>
-
-        <div className="mt-2">
-          {drugLikeness?.lipinski_pass ? (
-            <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
-              ✓ Lipinski compliant
-            </span>
-          ) : (
-            <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">
-              ✗ {(drugLikeness?.violations || []).length} Lipinski violation(s)
-            </span>
-          )}
-        </div>
-
-        <div className="mt-3">
-          <div className="mb-1 flex items-center justify-between text-xs text-gray-600">
-            <span>QED Score: {Number(drugLikeness?.qed_score ?? 0).toFixed(3)}/1.0</span>
-          </div>
-          <div className="h-1.5 w-full overflow-hidden rounded bg-gray-200">
-            <div className={`h-full rounded ${qedBarClass}`} style={{ width: `${qedPercent}%` }} />
-          </div>
-        </div>
-
-        <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-gray-700">
-          <p>MW: {Number(drugLikeness?.molecular_weight ?? 0)} Da</p>
-          <p>logP: {Number(drugLikeness?.log_p ?? 0)}</p>
-          <p>HBD: {Number(drugLikeness?.h_bond_donors ?? 0)}</p>
-          <p>HBA: {Number(drugLikeness?.h_bond_acceptors ?? 0)}</p>
-        </div>
-
-        <p className="mt-3 text-xs italic text-gray-600">{drugLikeness?.interpretation || ''}</p>
-      </div>
-
-      <div className="rounded-lg border border-gray-200 p-3">
+      {/* Structural Alerts Card */}
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-gray-900 mb-4">Structural Alerts</h3>
+        
         {hasStructuralAlerts ? (
-          <>
-            <h3 className="text-sm font-medium text-amber-700">⚠️ Structural Alerts</h3>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {structuralAlerts.map((alert, index) => (
-                <div
-                  key={`${alert.alert_type}-${alert.alert_name}-${index}`}
-                  className="relative"
-                  onMouseEnter={() => setHoveredAlertIndex(index)}
-                  onMouseLeave={() => setHoveredAlertIndex(null)}
-                >
-                  <span className="cursor-help rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
-                    {alert.alert_type}: {alert.alert_name}
-                  </span>
-                  {hoveredAlertIndex === index ? (
-                    <div className="absolute left-0 top-7 z-50 max-w-xs rounded bg-gray-900 px-3 py-2 text-xs text-white shadow-lg">
+          <div className="space-y-2">
+            {structuralAlerts.map((alert, index) => (
+              <div
+                key={`${alert.alert_type}-${alert.alert_name}-${index}`}
+                className="relative group"
+                onMouseEnter={() => setHoveredAlertIndex(index)}
+                onMouseLeave={() => setHoveredAlertIndex(null)}
+              >
+                <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 cursor-help">
+                  <div className="flex items-start gap-2">
+                    <span className="text-lg mt-0.5">⚠️</span>
+                    <div>
+                      <p className="text-xs font-semibold text-amber-900">{alert.alert_type}</p>
+                      <p className="text-xs text-amber-800 mt-0.5">{alert.alert_name}</p>
+                    </div>
+                  </div>
+                  {hoveredAlertIndex === index && (
+                    <div className="absolute left-0 top-full mt-2 z-50 max-w-xs rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-xl border border-gray-800">
                       {alert.description}
                     </div>
-                  ) : null}
+                  )}
                 </div>
-              ))}
-            </div>
-          </>
+              </div>
+            ))}
+          </div>
         ) : (
-          <p className="text-xs text-green-600">✓ No structural alerts detected</p>
+          <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-center">
+            <p className="text-sm font-semibold text-green-700">✓ No Structural Alerts Detected</p>
+            <p className="text-xs text-green-600 mt-1">Compound structure appears benign</p>
+          </div>
         )}
       </div>
     </div>
