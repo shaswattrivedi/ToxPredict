@@ -32,26 +32,6 @@ function getBooleanToxic(assay) {
   return Number(assay.probability || 0) >= 0.5
 }
 
-function getNarrativePreview(narrative) {
-  const cleaned = String(narrative || '').trim()
-  if (!cleaned) {
-    return ''
-  }
-
-  const firstTwo = cleaned
-    .split('. ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('. ')
-    .trim()
-
-  if (!firstTwo) {
-    return ''
-  }
-
-  return firstTwo.endsWith('.') ? `${firstTwo}..` : `${firstTwo}...`
-}
-
 function CompoundSummary({
   overallRisk,
   overallScore,
@@ -83,8 +63,6 @@ function CompoundSummary({
     () => assayResults.filter((r) => r.category === 'Stress Response' && getBooleanToxic(r)).length,
     [assayResults],
   )
-
-  const narrativePreview = getNarrativePreview(narrative)
 
   return (
     <div className="space-y-6">

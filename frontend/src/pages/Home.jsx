@@ -16,8 +16,10 @@ function Home() {
   const { predict, data, isLoading, isError, error } = usePrediction()
   const { data: examples } = useExamples()
   const [showResults, setShowResults] = useState(false)
+  const [activeTab, setActiveTab] = useState('assays')
 
   const handleSubmit = (smiles) => {
+    setActiveTab('assays')
     predict(smiles)
     setShowResults(true)
   }
@@ -39,12 +41,19 @@ function Home() {
   const nrAssays = data?.assay_results?.filter((r) => r.category === 'Nuclear Receptor') || []
   const srAssays = data?.assay_results?.filter((r) => r.category === 'Stress Response') || []
 
+  const tabClasses = (tab) =>
+    `rounded-lg px-4 py-2 text-sm font-semibold transition ${
+      activeTab === tab
+        ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-sm'
+        : 'bg-white text-gray-600 hover:bg-gray-50'
+    }`
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-emerald-100 text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 text-gray-900">
       <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
       <main className="pt-14">
-        <Container className="max-w-5xl">
+        <Container className="max-w-6xl">
           {/* Hero Section - strict order: title, subtitle, input card */}
           <div className="px-4 py-8 sm:px-6">
             <Hero
@@ -61,31 +70,7 @@ function Home() {
             </Hero>
           </div>
 
-          {/* Main Grid - Results + Molecule Viewer */}
-          <div className="grid grid-cols-1 gap-8 xl:gap-12 lg:grid-cols-3">
-            {/* Left Panel - Molecule Viewer (only on desktop, after input) */}
-            <div className="space-y-6 lg:col-span-1">
-              {/* Molecule Viewer */}
-              {data ? (
-                <div className="">
-                  <MoleculeViewer
-                    imageB64={data.molecule_image_b64}
-                    smiles={data.smiles}
-                    overallRisk={data.overall_risk}
-                    overallScore={data.overall_risk_score}
-                    toxicCount={data.toxic_assay_count}
-                    processingTimeMs={data.processing_time_ms}
-                    drugLikeness={data.drug_likeness}
-                    structuralAlerts={data.structural_alerts}
-                    hasStructuralAlerts={data.has_structural_alerts}
-                    cached={data.cached}
-                  />
-                </div>
-              ) : null}
-            </div>
-
-            {/* Right Panel - Results */}
-            <div id="results-section" className="lg:col-span-2">
+          <div id="results-section" className="px-4 pb-6 sm:px-6">
             {/* Loading State */}
             {isLoading ? (
               <div className="space-y-8 animate-fade-in">
@@ -131,44 +116,77 @@ function Home() {
 
             {/* Results Content */}
             {data ? (
-              <div className="space-y-8">
-                {/* Compound Summary */}
-                <CompoundSummary
-                  overallRisk={data.overall_risk}
-                  overallScore={data.overall_risk_score}
-                  toxicCount={data.toxic_assay_count}
-                  assayResults={data.assay_results}
-                  narrative={data.narrative}
-                  smiles={data.smiles}
-                  cached={data.cached}
-                  drugLikeness={data.drug_likeness}
-                />
+              <div className="space-y-6">
+                <div className="rounded-2xl border border-gray-200 bg-white p-2 shadow-sm">
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" className={tabClasses('summary')} onClick={() => setActiveTab('summary')}>
+                      Summary
+                    </button>
+                    <button type="button" className={tabClasses('assays')} onClick={() => setActiveTab('assays')}>
+                      Assays
+                    </button>
+                    <button type="button" className={tabClasses('insights')} onClick={() => setActiveTab('insights')}>
+                      Insights
+                    </button>
+                  </div>
+                </div>
 
-                {/* Risk Summary */}
-                <RiskSummary
-                  overallRisk={data.overall_risk}
-                  overallScore={data.overall_risk_score}
-                  toxicCount={data.toxic_assay_count}
-                  cached={data.cached}
-                />
+                {activeTab === 'summary' ? (
+                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    <div className="lg:col-span-1">
+                      <MoleculeViewer
+                        imageB64={data.molecule_image_b64}
+                        smiles={data.smiles}
+                        overallRisk={data.overall_risk}
+                        overallScore={data.overall_risk_score}
+                        toxicCount={data.toxic_assay_count}
+                        processingTimeMs={data.processing_time_ms}
+                        drugLikeness={data.drug_likeness}
+                        structuralAlerts={data.structural_alerts}
+                        hasStructuralAlerts={data.has_structural_alerts}
+                        cached={data.cached}
+                      />
+                    </div>
+                    <div className="space-y-6 lg:col-span-2">
+                      <CompoundSummary
+                        overallRisk={data.overall_risk}
+                        overallScore={data.overall_risk_score}
+                        toxicCount={data.toxic_assay_count}
+                        assayResults={data.assay_results}
+                        narrative={data.narrative}
+                        smiles={data.smiles}
+                        cached={data.cached}
+                        drugLikeness={data.drug_likeness}
+                      />
 
-                {/* Assay Grid */}
-                <AssayGrid
-                  assayResults={data.assay_results}
-                  nrAssays={nrAssays}
-                  srAssays={srAssays}
-                />
+                      <RiskSummary
+                        overallRisk={data.overall_risk}
+                        overallScore={data.overall_risk_score}
+                        toxicCount={data.toxic_assay_count}
+                        cached={data.cached}
+                      />
+                    </div>
+                  </div>
+                ) : null}
 
-                {/* Insights Section */}
-                <InsightsSection
-                  assayResults={data.assay_results}
-                  topAssay={topAssay}
-                  shapFeatures={data.top_shap_features}
-                />
+                {activeTab === 'assays' ? (
+                  <AssayGrid
+                    assayResults={data.assay_results}
+                    nrAssays={nrAssays}
+                    srAssays={srAssays}
+                  />
+                ) : null}
+
+                {activeTab === 'insights' ? (
+                  <InsightsSection
+                    assayResults={data.assay_results}
+                    topAssay={topAssay}
+                    shapFeatures={data.top_shap_features}
+                  />
+                ) : null}
               </div>
             ) : null}
           </div>
-        </div>
         </Container>
       </main>
 
