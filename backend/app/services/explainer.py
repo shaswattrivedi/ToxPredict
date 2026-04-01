@@ -14,9 +14,17 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import shap
 
 logger = logging.getLogger(__name__)
+
+try:
+    import shap
+
+    _SHAP_AVAILABLE = True
+except Exception as exc:  # pragma: no cover - environment-specific import failure
+    shap = None  # type: ignore[assignment]
+    _SHAP_AVAILABLE = False
+    logger.warning("SHAP unavailable at import time; explainability disabled: %s", exc)
 
 _FEATURE_NAMES_PATH = (
     Path(__file__).parent.parent.parent.parent
@@ -51,7 +59,7 @@ except Exception as exc:
     logger.error("Failed to load feature names from %s: %s", _FEATURE_NAMES_PATH, exc)
     FEATURE_NAMES = []
 
-_explainer_cache: dict[str, shap.TreeExplainer] = {}
+_explainer_cache: dict[str, Any] = {}
 
 
 FEATURE_INSIGHTS = {
@@ -300,9 +308,11 @@ def _risk_bucket(probability: float) -> str:
     return "LOW"
 
 
-def _get_explainer(model: Any, assay_name: str) -> shap.TreeExplainer:
+def _get_explainer(model: Any, assay_name: str) -> Any:
     """Cache TreeExplainers - expensive to create, cheap to reuse."""
     try:
+        if not _SHAP_AVAILABLE or shap is None:
+            return None
         if assay_name not in _explainer_cache:
             _explainer_cache[assay_name] = shap.TreeExplainer(model)
         return _explainer_cache[assay_name]
@@ -373,6 +383,9 @@ def get_shap_explanation(
     }
     """
     try:
+        if not _SHAP_AVAILABLE or shap is None:
+            return []
+
         vector = np.asarray(feature_vector, dtype=float).reshape(-1)
         if vector.size == 0:
             return []
