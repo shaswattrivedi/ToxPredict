@@ -65,7 +65,7 @@ function CustomAngleTick(props) {
   )
 }
 
-function RadarChart({ assayResults }) {
+function RadarChart({ assayResults, height }) {
   const data = (assayResults || []).map((r) => ({
     assay: r.display_name,
     probability: Number(r.probability) * 100,
@@ -96,7 +96,7 @@ function RadarChart({ assayResults }) {
         <p className="text-xs text-gray-500">Across all 12 biological assay endpoints</p>
       </div>
 
-      <ResponsiveContainer width="100%" height={380}>
+      <ResponsiveContainer width="100%" height={height}>
         <RechartsRadar cx="50%" cy="50%" outerRadius="70%" data={data}>
           <PolarGrid gridType="polygon" />
           <PolarAngleAxis
@@ -165,6 +165,11 @@ RadarChart.propTypes = {
       risk_level: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  height: PropTypes.number,
+}
+
+RadarChart.defaultProps = {
+  height: 380,
 }
 
 export default RadarChart
