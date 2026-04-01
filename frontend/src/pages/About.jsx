@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import Header from '../components/ui/Header'
+import Container from '../components/ui/Container'
 
 const PERFORMANCE_ROWS = [
   ['NR-AR', 'Androgen Receptor', '0.759', 'Nuclear Receptor'],
@@ -35,18 +37,19 @@ const FRONTEND_STACK = [
 
 function About() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <header>
-        <Link to="/" className="text-sm text-blue-600 hover:text-blue-700 hover:underline">
-          ← Back to Predictor
-        </Link>
-        <h1 className="mt-3 text-3xl font-bold text-gray-900">About ToxPredict</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Computational drug toxicity prediction for pharmaceutical research
-        </p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-emerald-100 text-gray-900">
+      <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
-      <section>
+      <main className="pt-14">
+        <Container className="max-w-4xl mx-auto px-4 py-8">
+          <header className="mb-8">
+            <h1 className="mt-3 text-4xl font-bold text-gray-900 text-center tracking-tight">About ToxPredict</h1>
+            <p className="mt-2 text-base text-gray-600 text-center">
+              Computational drug toxicity prediction for pharmaceutical research
+            </p>
+          </header>
+
+          <section>
         <h2 className="text-xl font-semibold text-gray-900 mb-3 mt-8">The Problem</h2>
         <p className="text-sm text-gray-600 leading-relaxed">
           Drug development fails at a rate of over 90% in clinical trials, with unexpected
@@ -211,6 +214,17 @@ function About() {
           compounds with confirmed labels for that specific assay.
         </p>
       </section>
+        </Container>
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-16 border-t border-gray-200 bg-white py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm text-gray-600">
+            ToxPredict © 2026 | Track A - CodeCure AI Hackathon @ IIT BHU SPIRIT
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

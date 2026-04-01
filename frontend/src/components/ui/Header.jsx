@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 function Header({ title, tagline }) {
   return (
@@ -19,11 +20,19 @@ function Header({ title, tagline }) {
         }
       `}</style>
       <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-between px-6">
-        <div className="flex items-center gap-2 animate-fade-in-up">
+        <Link to="/" className="flex items-center gap-2 animate-fade-in-up hover:opacity-80 transition-opacity">
           <span className="text-base"></span>
           <h1 className="text-lg font-semibold tracking-tight text-gray-800">{title}</h1>
+        </Link>
+        <div className="flex items-center gap-6">
+          <p className="hidden text-xs text-gray-500 md:block">{tagline}</p>
+          <Link
+            to="/about"
+            className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+          >
+            About Us
+          </Link>
         </div>
-        <p className="hidden text-xs text-gray-500 md:block">{tagline}</p>
       </div>
     </header>
   )
