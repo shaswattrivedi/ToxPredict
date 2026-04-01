@@ -43,6 +43,7 @@ function CompoundSummary({
 }) {
   const styles = RISK_STYLES[overallRisk] || RISK_STYLES.Low
   const scorePct = Math.max(0, Math.min(100, Number(overallScore || 0) * 100))
+  const riskKey = String(overallRisk || '').toUpperCase()
 
   const highestAssay = useMemo(() => {
     if (!Array.isArray(assayResults) || assayResults.length === 0) {
@@ -72,30 +73,35 @@ function CompoundSummary({
           {/* Content Column */}
           <div className="lg:col-span-2 flex flex-col justify-center space-y-5">
             {/* Risk Badge */}
-            <div className="flex flex-wrap items-center gap-3">
-              <span className={`rounded-md px-4 py-1.5 text-sm uppercase tracking-widest font-bold ${styles.badge} shadow-sm`}>
-                {String(overallRisk).toUpperCase()} RISK
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-sm font-bold text-gray-500 uppercase tracking-widest pl-1">
+                Overall Risk Assessment
               </span>
-              {cached ? (
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-white border border-gray-200 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500 shadow-sm">
-                  <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div> Cached
-                </span>
-              ) : null}
+              <div className="flex items-center gap-4">
+                <h2 className={`mt-1 text-5xl font-black ${riskKey === 'HIGH' ? 'text-red-500' : riskKey === 'MEDIUM' ? 'text-amber-500' : 'text-green-500'}`}>
+                  {String(overallRisk).toUpperCase()}
+                </h2>
+                {cached ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md border border-gray-600/50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-300 shadow-sm mt-3">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-400"></div> Cached
+                  </span>
+                ) : null}
+              </div>
             </div>
 
             {/* Key Info */}
-            <div className="grid grid-cols-2 gap-4 border-l-2 border-gray-200/50 pl-4 py-1 text-sm bg-white/40 p-3 rounded-r-lg">
+            <div className="grid grid-cols-2 gap-6 bg-white/10 backdrop-blur-md border border-gray-600/40 p-6 rounded-2xl text-sm shadow-lg">
               <div>
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Endpoints Triggered</p>
-                <p className="text-gray-900 font-medium">
-                  <span className={`${toxicCount > 0 ? 'text-red-600 font-bold text-base' : 'text-gray-900 font-bold text-base'}`}>{toxicCount}</span> / 12 Assays
+                <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Endpoints Triggered</p>
+                <p className="text-gray-200 font-medium">
+                  <span className={`${toxicCount > 0 ? 'text-red-400 font-bold text-xl' : 'text-green-400 font-bold text-xl'}`}>{toxicCount}</span> / 12 Assays
                 </p>
               </div>
               {highestAssay ? (
                 <div>
-                  <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Primary Concern</p>
-                  <p className="text-gray-900 font-medium">
-                    {highestAssay.display_name} <span className="text-gray-500">({(Number(highestAssay.probability || 0) * 100).toFixed(0)}%)</span>
+                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Primary Concern</p>
+                  <p className="text-gray-200 font-medium">
+                    {highestAssay.display_name} <span className="text-gray-500 font-bold ml-1">({(Number(highestAssay.probability || 0) * 100).toFixed(0)}%)</span>
                   </p>
                 </div>
               ) : null}
@@ -108,7 +114,7 @@ function CompoundSummary({
           </div>
 
           {/* Score Card */}
-          <div className="flex flex-col justify-center items-center rounded-xl bg-white border border-gray-200/60 p-6 shadow-sm">
+          <div className="flex flex-col justify-center items-center rounded-xl bg-white/10 backdrop-blur-md border border-gray-200/60 p-6 shadow-sm">
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Ensemble Score</p>
             <div className="flex items-baseline gap-1 my-2">
               <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
@@ -129,41 +135,41 @@ function CompoundSummary({
         </div>
 
         <div className="mt-4">
-          <div className="relative h-7 overflow-visible rounded-md border border-gray-200 bg-white">
-            <div className="flex h-full w-full overflow-hidden rounded-md">
-              <div className="flex w-[40%] items-center justify-center bg-green-100 text-[11px] font-semibold text-green-700">
-                LOW (0-40%)
+          <div className="relative h-9 overflow-visible rounded-lg border border-gray-100 bg-white/10 backdrop-blur-md">
+            <div className="flex h-full w-full overflow-hidden rounded-lg">
+              <div className="flex w-1/3 items-center justify-center bg-green-500/20 text-[11px] font-bold text-green-300">
+                LOW
               </div>
-              <div className="flex w-[30%] items-center justify-center bg-amber-100 text-[11px] font-semibold text-amber-700">
-                MEDIUM (40-70%)
+              <div className="flex w-1/3 items-center justify-center bg-amber-500/20 text-[11px] font-bold text-amber-300 border-x border-gray-500/30">
+                MEDIUM
               </div>
-              <div className="flex w-[30%] items-center justify-center bg-red-100 text-[11px] font-semibold text-red-700">
-                HIGH (70-100%)
+              <div className="flex w-1/3 items-center justify-center bg-red-500/20 text-[11px] font-bold text-red-300">
+                HIGH
               </div>
             </div>
             <div
-              className="absolute -top-2 text-sm text-gray-700"
-              style={{ left: `calc(${scorePct}% - 6px)` }}
+              className={`absolute -top-3 text-xl transition-all duration-300 ${riskKey === 'LOW' ? 'text-green-400' : riskKey === 'MEDIUM' ? 'text-amber-400' : 'text-red-500'}`}
+              style={{ left: `calc(${riskKey === 'LOW' ? 16.66 : riskKey === 'MEDIUM' ? 50 : 83.33}% - 8px)` }}
               aria-label="Current ensemble score marker"
             >
               ▼
             </div>
           </div>
-          <p className="mt-2 text-xs text-gray-400">
-            LOW = model predicts no significant activity | MEDIUM = borderline signals present |
-            HIGH = predicted toxic activity at assay concentration
-          </p>
         </div>
       </section>
 
       {/* Narrative */}
       {narrative ? (
-        <section className="rounded-2xl border border-gray-200/50 bg-white p-6 shadow-sm overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-purple-500"></div>
+        <section className="rounded-2xl border border-gray-600/40 bg-white/10 backdrop-blur-md p-8 shadow-sm overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-indigo-500 to-purple-500"></div>
           <div className="flex gap-4">
-            <div className="flex-1">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 ml-1">Predictive Biological Narrative</h3>
-              <p className="text-[15px] leading-[1.65] text-gray-800 font-medium pl-1 border-l-2 border-indigo-100 ml-1">{narrative}</p>
+            <div className="flex-1 pl-2">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-300 mb-4">Predictive Biological Narrative</h3>
+              <ul className="text-sm leading-relaxed text-gray-200 font-medium space-y-3 list-disc marker:text-indigo-400 pl-4">
+                {narrative.split('.').map(s => s.trim()).filter(Boolean).map((sentence, idx) => (
+                  <li key={idx}>{sentence}.</li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>

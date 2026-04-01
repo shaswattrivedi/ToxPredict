@@ -20,7 +20,6 @@ function MoleculeViewer({
   cached,
 }) {
   const [copyState, setCopyState] = useState('Copy SMILES')
-  const [hoveredAlertIndex, setHoveredAlertIndex] = useState(null)
 
   const riskKey = String(overallRisk || '').toUpperCase()
   const riskClass = OVERALL_RISK_STYLES[riskKey] || OVERALL_RISK_STYLES.LOW
@@ -46,7 +45,7 @@ function MoleculeViewer({
   return (
     <div className="space-y-4">
       {/* Molecule Structure Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white/5 backdrop-blur-md border-white/10 p-6 shadow-sm">
         {cached ? (
           <div className="mb-3 flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-gray-500 bg-gray-100/80 rounded-full w-fit px-2.5 py-1 backdrop-blur-sm border border-gray-200/50">
             <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div>
@@ -65,17 +64,25 @@ function MoleculeViewer({
           ) : (
             <span className="text-sm text-gray-500">Structure unavailable</span>
           )}
-          <p className="text-[10px] uppercase tracking-wider font-semibold text-gray-400 mt-2">
-            Standard CPK coloring (O=Red, N=Blue)
-          </p>
+          <div className="flex flex-col gap-1 items-center mt-2 w-full text-center">
+            <p className="text-[10px] uppercase font-bold text-red-400">
+              ● Red Highlight: High Toxicity Contribution (Morgan FP)
+            </p>
+            <p className="text-[10px] uppercase font-bold text-green-400">
+              ● Green Highlight: Low Toxicity Contribution (Morgan FP)
+            </p>
+            <p className="text-[9px] uppercase tracking-wider font-semibold text-gray-400 mt-1">
+              Standard CPK (Un-highlighted O=Red, N=Blue)
+            </p>
+          </div>
         </div>
 
         {/* SMILES Display */}
-        <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 mb-3">
-          <p className="text-xs font-semibold text-gray-700 mb-1.5">SMILES Notation:</p>
+        <div className="rounded-lg bg-white/5 border border-white/20 p-3 mb-3">
+          <p className="text-xs font-semibold text-gray-300 mb-1.5">SMILES Notation:</p>
           <div className="flex items-center gap-2">
             <code
-              className="flex-1 overflow-auto text-xs text-gray-700 font-mono break-all"
+              className="flex-1 overflow-auto text-xs text-gray-300 font-mono break-all"
               title={smilesText}
             >
               {shortSmiles || 'No SMILES provided'}
@@ -83,7 +90,7 @@ function MoleculeViewer({
             <button
               type="button"
               onClick={handleCopySmiles}
-              className="shrink-0 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-100 active:scale-95"
+              className="shrink-0 rounded-lg border border-gray-300 bg-white/10 backdrop-blur-md px-2.5 py-1.5 text-xs font-medium text-gray-300 transition hover:bg-gray-100 active:scale-95"
             >
               {copyState}
             </button>
@@ -92,13 +99,13 @@ function MoleculeViewer({
       </div>
 
       {/* Risk Summary Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white/5 backdrop-blur-md border-white/10 p-6 shadow-sm">
         <h3 className="text-sm font-semibold text-gray-900 mb-4">Overall Assessment</h3>
         
         <div className="space-y-3">
           {/* Risk Badge */}
           <div>
-            <p className="text-xs font-semibold text-gray-700 mb-2">Overall Risk Level</p>
+            <p className="text-xs font-semibold text-gray-300 mb-2">Overall Risk Level</p>
             <div className={`inline-flex rounded-full px-5 py-2 text-base font-bold ${riskClass}`}>
               {riskKey === 'HIGH' && '🔴'} {riskKey === 'MEDIUM' && '🟠'} {riskKey === 'LOW' && '🟢'} {riskKey || 'LOW'}
             </div>
@@ -135,13 +142,13 @@ function MoleculeViewer({
       </div>
 
       {/* Drug-likeness Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white/5 backdrop-blur-md border-white/10 p-6 shadow-sm">
         <h3 className="text-sm font-bold text-gray-900 mb-4">Drug-likeness Profile</h3>
 
         {/* Lipinski Compliance */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-gray-700">Lipinski Rule of Five</p>
+            <p className="text-xs font-semibold text-gray-300">Lipinski Rule of Five</p>
             {drugLikeness?.lipinski_pass ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                 <span>✓</span> Compliant
@@ -157,7 +164,7 @@ function MoleculeViewer({
         {/* QED Score */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-semibold text-gray-700">QED Score</p>
+            <p className="text-xs font-semibold text-gray-300">QED Score</p>
             <span className="text-sm font-bold text-gray-900">{Number(drugLikeness?.qed_score ?? 0).toFixed(3)}</span>
           </div>
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 border border-gray-300">
@@ -193,46 +200,47 @@ function MoleculeViewer({
         </div>
 
         {drugLikeness?.interpretation ? (
-          <p className="mt-4 text-xs italic text-gray-700 bg-gray-50 rounded-lg p-3 border border-gray-200">
+          <p className="mt-4 text-xs italic text-gray-300 bg-gray-50 rounded-lg p-3 border border-gray-200">
             {drugLikeness.interpretation}
           </p>
         ) : null}
       </div>
 
       {/* Structural Alerts Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="text-sm font-bold text-gray-900 mb-4">Structural Alerts</h3>
+      <div className="rounded-2xl border border-gray-200 bg-white/10 backdrop-blur-md/10 backdrop-blur-md p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-gray-100 mb-4">Structural Alerts</h3>
         
         {hasStructuralAlerts ? (
           <div className="space-y-2">
-            {structuralAlerts.map((alert, index) => (
+            {structuralAlerts.map((alert, index) => {
+              const formatName = (str) => str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              const typeMap = { 'brenk': 'Brenk Library Alert (Reactive/Toxicophore)', 'BRENK': 'Brenk Library Alert (Reactive/Toxicophore)' };
+              const displayType = typeMap[alert.alert_type?.toLowerCase()] || formatName(alert.alert_type || '');
+              const displayName = formatName(alert.alert_name || '');
+              const displayDesc = alert.description || 'Compound contains a structural motif that has been flagged as potentially toxic or reactive.';
+
+              return (
               <div
                 key={`${alert.alert_type}-${alert.alert_name}-${index}`}
                 className="relative group"
-                onMouseEnter={() => setHoveredAlertIndex(index)}
-                onMouseLeave={() => setHoveredAlertIndex(null)}
               >
-                <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 cursor-help">
+                <div className="rounded-lg bg-red-900/40 border border-red-700/50 p-3 transition-all hover:bg-red-800/50">
                   <div className="flex items-start gap-2">
-                    <span className="text-lg mt-0.5"></span>
+                    <span className="text-lg mt-0.5">⚠️</span>
                     <div>
-                      <p className="text-xs font-semibold text-amber-900">{alert.alert_type}</p>
-                      <p className="text-xs text-amber-800 mt-0.5">{alert.alert_name}</p>
+                      <p className="text-xs font-semibold text-red-200">{displayType}</p>
+                      <p className="text-sm text-white mt-0.5 font-bold">{displayName}</p>
+                      <p className="text-xs text-red-300 mt-1">{displayDesc}</p>
                     </div>
                   </div>
-                  {hoveredAlertIndex === index && (
-                    <div className="absolute left-0 top-full mt-2 z-50 max-w-xs rounded-lg bg-gray-900 px-3 py-2 text-xs text-white shadow-xl border border-gray-800">
-                      {alert.description}
-                    </div>
-                  )}
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         ) : (
-          <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-center">
-            <p className="text-sm font-semibold text-green-700">✓ No Structural Alerts Detected</p>
-            <p className="text-xs text-green-600 mt-1">Compound structure appears benign</p>
+          <div className="rounded-lg bg-green-900/30 border border-green-700 p-4 text-center">
+            <p className="text-sm font-semibold text-green-300">✓ No Structural Alerts Detected</p>
+            <p className="text-xs text-green-400 mt-1">Compound structure appears benign</p>
           </div>
         )}
       </div>

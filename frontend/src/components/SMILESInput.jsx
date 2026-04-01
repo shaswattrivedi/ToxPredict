@@ -51,10 +51,10 @@ function SMILESInput({ onSubmit, isLoading, examples }) {
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-4">
       <div>
-        <label className="block text-sm font-semibold text-gray-900 mb-2">
+        <label className="block text-xl font-extrabold text-slate-800 mb-2">
           Enter SMILES String
         </label>
-        <p className="text-xs text-gray-600 mb-3">
+        <p className="text-base font-medium text-slate-600 mb-5">
           SMILES is a standard notation for molecular structures
         </p>
         <textarea
@@ -62,14 +62,14 @@ function SMILESInput({ onSubmit, isLoading, examples }) {
           onChange={(event) => setSmiles(event.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="e.g., CC(=O)Oc1ccccc1C(=O)O"
-          className="min-h-[120px] w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 font-mono text-sm text-gray-900 outline-none transition-all duration-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-300 disabled:bg-gray-50 disabled:text-gray-500"
+          className="min-h-[160px] w-full resize-none rounded-xl border border-gray-300 bg-white px-5 py-5 font-mono text-[1.1rem] leading-relaxed text-gray-800 shadow-inner outline-none transition-all duration-200 placeholder-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 disabled:bg-gray-50 disabled:text-gray-500"
           disabled={isLoading}
         />
       </div>
 
       {error ? (
-        <div className="rounded-lg bg-red-50 border border-red-200 p-3">
-          <p className="text-sm font-medium text-red-700">{error}</p>
+        <div className="rounded-xl bg-red-50 border border-red-200 p-4">
+          <p className="text-sm font-semibold text-red-800">{error}</p>
         </div>
       ) : null}
 

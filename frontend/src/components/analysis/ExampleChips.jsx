@@ -6,9 +6,9 @@ function ExampleChips({ examples, onSelect, isLoading }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
-      <p className="text-xs font-semibold text-gray-500">Try Examples:</p>
-      <div className="flex flex-wrap items-center justify-center gap-2">
+    <div className="flex flex-col items-center justify-center gap-3 mt-8 mb-6">
+      <p className="text-[14px] font-bold text-slate-500">Try Examples:</p>
+      <div className="flex flex-wrap items-center justify-center gap-3">
         {examples.map((example) => (
           <button
             key={example.name}
@@ -16,7 +16,7 @@ function ExampleChips({ examples, onSelect, isLoading }) {
             onClick={() => onSelect(example.smiles)}
             title={`${example.description}\n\nExpected risk: ${example.expected_risk}`}
             disabled={isLoading}
-            className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full bg-blue-100 px-4 py-2 text-[14px] font-bold text-blue-700 transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {example.name}
           </button>
