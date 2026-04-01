@@ -71,8 +71,11 @@ function MoleculeViewer({
         <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 mb-3">
           <p className="text-xs font-semibold text-gray-700 mb-1.5">SMILES Notation:</p>
           <div className="flex items-center gap-2">
-            <code className="flex-1 overflow-auto text-xs text-gray-700 font-mono break-all">
-              {smilesText || 'No SMILES provided'}
+            <code
+              className="flex-1 overflow-auto text-xs text-gray-700 font-mono break-all"
+              title={smilesText}
+            >
+              {shortSmiles || 'No SMILES provided'}
             </code>
             <button
               type="button"

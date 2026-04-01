@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 const RISK_STYLES = {
@@ -52,32 +52,6 @@ function getNarrativePreview(narrative) {
   return firstTwo.endsWith('.') ? `${firstTwo}..` : `${firstTwo}...`
 }
 
-function getQEDVerdict(qed) {
-  if (qed >= 0.67) {
-    return 'This compound has strong drug-like properties - structurally similar to many approved medications.'
-  }
-  if (qed >= 0.34) {
-    return 'This compound has moderate drug-like properties - some optimization may be needed for clinical use.'
-  }
-  return 'This compound has poor drug-like properties - significant structural modification would be required for pharmaceutical development.'
-}
-
-function getCombinedVerdict(lipinskiPass, qed, violations) {
-  if (lipinskiPass && qed >= 0.67) {
-    return '✓ This compound has excellent drug-like properties and passes all oral bioavailability criteria - a strong candidate profile for further development, independent of its toxicity findings.'
-  }
-
-  if (lipinskiPass && qed >= 0.34) {
-    return `✓ This compound passes oral bioavailability criteria with moderate drug-likeness (QED: ${qed.toFixed(3)}). Structural optimization could improve its pharmaceutical profile.`
-  }
-
-  if (lipinskiPass && qed < 0.34) {
-    return `⚠️ While this compound passes Lipinski criteria, its low QED score (${qed.toFixed(3)}) suggests poor overall drug-likeness. Significant optimization would be needed.`
-  }
-
-  return `✗ This compound fails ${violations.length} Lipinski rule(s): ${violations.join(', ')}. Poor predicted oral bioavailability - likely unsuitable as an oral drug without structural modification.`
-}
-
 function CompoundSummary({
   overallRisk,
   overallScore,
@@ -86,11 +60,7 @@ function CompoundSummary({
   narrative,
   smiles,
   cached,
-  drugLikeness,
 }) {
-  const [showLipinskiTip, setShowLipinskiTip] = useState(false)
-  const [showQEDTip, setShowQEDTip] = useState(false)
-
   const styles = RISK_STYLES[overallRisk] || RISK_STYLES.Low
   const scorePct = Math.max(0, Math.min(100, Number(overallScore || 0) * 100))
 
@@ -115,26 +85,6 @@ function CompoundSummary({
   )
 
   const narrativePreview = getNarrativePreview(narrative)
-
-  const molecularWeight = Number(drugLikeness.molecular_weight || 0)
-  const logP = Number(drugLikeness.log_p || 0)
-  const hBondDonors = Number(drugLikeness.h_bond_donors || 0)
-  const hBondAcceptors = Number(drugLikeness.h_bond_acceptors || 0)
-  const qedScore = Number(drugLikeness.qed_score || 0)
-  const qedPct = Math.max(0, Math.min(100, qedScore * 100))
-
-  const mwPass = molecularWeight <= 500
-  const logPPass = logP <= 5
-  const hbdPass = hBondDonors <= 5
-  const hbaPass = hBondAcceptors <= 10
-
-  const lipinskiPass = Boolean(drugLikeness.lipinski_pass)
-  const violations = Array.isArray(drugLikeness.violations) ? drugLikeness.violations : []
-
-  const qedColor = qedScore >= 0.67 ? 'text-green-600' : qedScore >= 0.34 ? 'text-amber-600' : 'text-red-600'
-  const qedBarColor = qedScore >= 0.67 ? 'bg-green-500' : qedScore >= 0.34 ? 'bg-amber-500' : 'bg-red-500'
-
-  const combinedVerdict = getCombinedVerdict(lipinskiPass, qedScore, violations)
 
   return (
     <div className="space-y-6">
@@ -224,42 +174,6 @@ function CompoundSummary({
             LOW = model predicts no significant activity | MEDIUM = borderline signals present |
             HIGH = predicted toxic activity at assay concentration
           </p>
-        </div>
-      </section>
-
-      <section className="rounded-xl border border-gray-200 bg-white p-4">
-        <h3 className="text-base font-semibold text-gray-900">Drug-likeness Profile</h3>
-        <p className="text-xs text-gray-500">How suitable is this compound as a potential drug?</p>
-
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <div className="relative flex items-center gap-2">
-              <h4 className="text-sm font-medium text-gray-900">Lipinski's Rule of Five</h4>
-              <button
-                type="button"
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-gray-300 text-xs text-gray-600"
-                onMouseEnter={() => setShowLipinskiTip(true)}
-                onMouseLeave={() => setShowLipinskiTip(false)}
-              >
-                ?
-              </button>
-              {showLipinskiTip ? (
-                <div className="absolute left-0 top-7 z-50 max-w-sm rounded-lg border border-gray-200 bg-white p-3 text-xs text-gray-600 shadow-lg">
-                  Established in 1997 by Pfizer scientist Christopher Lipinski, these 5 rules
-                  predict whether a compound can be absorbed when taken orally. A compound that
-                  passes all rules is considered "drug-like" - likely to survive digestion and
-                  reach the bloodstream. Most approved oral drugs satisfy these rules.
-                </div>
-              ) : null}
-            </div>
-
-            {/* Disclaimer */}
-            <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 mt-4">
-              <p className="text-xs text-blue-800 font-medium">
-                ⚠️ <span>In vitro predictions only</span> — Do not represent clinical toxicity at therapeutic doses
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 

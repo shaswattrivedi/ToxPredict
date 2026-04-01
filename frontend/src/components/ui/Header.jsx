@@ -23,6 +23,7 @@ function Header({ title, tagline }) {
           <span className="text-base">🧬</span>
           <h1 className="text-lg font-semibold tracking-tight text-gray-800">{title}</h1>
         </div>
+        <p className="hidden text-xs text-gray-500 md:block">{tagline}</p>
       </div>
     </header>
   )

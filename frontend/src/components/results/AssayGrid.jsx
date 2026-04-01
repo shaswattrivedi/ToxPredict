@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import Card from '../ui/Card'
 import Section from '../ui/Section'
 import ToxicityCard from '../ToxicityCard'
 
@@ -7,7 +6,7 @@ import ToxicityCard from '../ToxicityCard'
  * AssayGrid component
  * Displays assay results grouped by category
  */
-function AssayGrid({ assayResults, nrAssays, srAssays }) {
+function AssayGrid({ nrAssays, srAssays }) {
   return (
     <div className="space-y-8">
       {/* Nuclear Receptors Section */}
@@ -38,13 +37,8 @@ function AssayGrid({ assayResults, nrAssays, srAssays }) {
 }
 
 AssayGrid.propTypes = {
-  assayResults: PropTypes.arrayOf(PropTypes.object),
   nrAssays: PropTypes.arrayOf(PropTypes.object).isRequired,
   srAssays: PropTypes.arrayOf(PropTypes.object).isRequired,
-}
-
-AssayGrid.defaultProps = {
-  assayResults: [],
 }
 
 export default AssayGrid
