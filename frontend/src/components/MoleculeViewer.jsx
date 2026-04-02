@@ -52,7 +52,7 @@ function MoleculeViewer({
   return (
     <div className="space-y-6">
       {/* Molecule Structure Card */}
-      <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
+      <div className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
         {cached ? (
           <div className="mb-3 flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-gray-500 bg-white rounded-full w-fit px-3 py-1 shadow-sm border border-gray-200">
             <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div>
@@ -78,7 +78,7 @@ function MoleculeViewer({
       </div>
 
       {/* Structural Alerts Card */}
-      <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
+      <div className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
         <h3 className="text-sm font-bold text-gray-900 mb-5 uppercase tracking-widest">Structural Alerts</h3>
         
         {hasStructuralAlerts ? (
@@ -113,7 +113,7 @@ function MoleculeViewer({
             )})}
           </div>
         ) : (
-          <div className="rounded-2xl bg-white border border-gray-200 p-8 text-center shadow-sm hover:shadow-md transition-shadow">
+          <div className="rounded-2xl bg-white border border-gray-200 p-8 text-center shadow-md">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-50 mb-3 border border-green-100 shadow-sm">
               <span className="text-lg font-black text-green-500">✓</span>
             </span>

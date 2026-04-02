@@ -10,7 +10,7 @@ function AssayGrid({ nrAssays, srAssays }) {
   return (
     <div className="space-y-10">
       {/* Nuclear Receptors Section */}
-      <section className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
+      <section className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
         <div className="flex gap-4">
           <div className="flex-1">
             <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest">Nuclear Receptors</h3>
@@ -24,7 +24,7 @@ function AssayGrid({ nrAssays, srAssays }) {
       </section>
 
       {/* Stress Response Section */}
-      <section className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
+      <section className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
         <div className="flex gap-4">
           <div className="flex-1">
             <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest">Stress Response</h3>

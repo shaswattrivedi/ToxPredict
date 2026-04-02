@@ -7,7 +7,7 @@ import Card from '../ui/Card'
  */
 function NarrativeSection({ narrative, topAssay }) {
   return (
-    <Card className="border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+    <Card className="border border-gray-200 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
       <div className="flex items-start gap-4">
         <span className="mt-1 shrink-0 text-2xl">🧠</span>
         <div className="flex-1">

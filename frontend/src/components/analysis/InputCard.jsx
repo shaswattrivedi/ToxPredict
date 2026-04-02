@@ -3,7 +3,7 @@ import SMILESInput from '../SMILESInput'
 
 function InputCard({ onSubmit, isLoading, examples }) {
   return (
-    <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
+    <div className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
       <SMILESInput onSubmit={onSubmit} isLoading={isLoading} examples={examples} />
     </div>
   )

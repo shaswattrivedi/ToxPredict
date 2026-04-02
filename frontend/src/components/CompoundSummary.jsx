@@ -73,7 +73,7 @@ function CompoundSummary({
   return (
     <div className="space-y-6">
       {/* Overall Risk Summary */}
-      <section className={`rounded-2xl p-6 border ${styles.card} hover:shadow-md transition-shadow`}>
+      <section className={`rounded-2xl p-6 border ${styles.card} hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group`}>
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Content Column */}
           <div className="lg:col-span-2 flex flex-col justify-center space-y-5">
@@ -95,7 +95,7 @@ function CompoundSummary({
             </div>
 
             {/* Key Info */}
-            <div className={`grid grid-cols-2 gap-6 p-6 rounded-2xl text-sm shadow-md hover:shadow-lg transition-shadow border ${styles.scoreCard}`}>
+            <div className={`grid grid-cols-2 gap-6 p-6 rounded-2xl text-sm shadow-md border ${styles.scoreCard}`}>
               <div>
                 <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2">Endpoints Triggered</p>
                 <p className="text-gray-800 font-medium">
@@ -119,7 +119,7 @@ function CompoundSummary({
           </div>
 
           {/* Score Card */}
-          <div className={`flex flex-col justify-center items-center rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow border ${styles.scoreCard}`}>
+          <div className={`flex flex-col justify-center items-center rounded-2xl p-6 shadow-md border ${styles.scoreCard}`}>
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-1">Ensemble Score</p>
             <div className="flex items-baseline gap-1 my-2">
               <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
@@ -140,7 +140,7 @@ function CompoundSummary({
         </div>
 
         <div className="mt-5">
-          <div className="relative h-10 overflow-visible rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+          <div className="relative h-10 overflow-visible rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex h-full w-full overflow-hidden rounded-xl">
               <div className={`flex w-1/3 items-center justify-center text-xs font-bold transition-colors ${riskKey === 'LOW' ? 'bg-green-500 text-white shadow-inner' : 'bg-green-50 text-green-700'}`}>
                 LOW
@@ -165,7 +165,7 @@ function CompoundSummary({
 
       {/* Narrative */}
       {narrative ? (
-        <section className="rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
+        <section className="rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
           <div className="flex gap-4">
             <div className="flex-1">
               <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Predictive Biological Narrative</h3>
@@ -180,7 +180,7 @@ function CompoundSummary({
       ) : null}
 
               {/* Drug-likeness Horizontal Card */}
-        <section className="rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300 mb-6">
+        <section className="rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group mb-6">
           <div className="flex gap-4">
             <div className="flex-1">
               <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest">Drug-likeness Profile</h3>

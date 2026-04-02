@@ -12,7 +12,7 @@ function InsightsSection({ assayResults, topAssay, shapFeatures }) {
   return (
     <div className="space-y-8">
       {/* Risk Profile Chart */}
-      <section className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-sm transition-all duration-300">
+      <section className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
         <div className="md:hidden w-full flex justify-center">
           <RadarChart assayResults={assayResults} height={320} />
         </div>

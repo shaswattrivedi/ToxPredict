@@ -18,19 +18,19 @@ const ASSAY_TOOLTIPS = {
 
 const RISK_STYLES = {
   High: {
-    card: 'border-red-300 bg-gradient-to-br from-red-100 to-rose-100 shadow-sm hover:shadow-md',
+    card: 'border-red-300 bg-gradient-to-br from-red-100 to-rose-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group',
     badge: 'bg-red-600 text-white font-bold text-[10px] uppercase tracking-wider',
     bar: 'bg-red-500',
     icon: '🔴',
   },
   Medium: {
-    card: 'border-amber-300 bg-gradient-to-br from-amber-100 to-orange-100 shadow-sm hover:shadow-md',
+    card: 'border-amber-300 bg-gradient-to-br from-amber-100 to-orange-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group',
     badge: 'bg-amber-600 text-white font-bold text-[10px] uppercase tracking-wider',
     bar: 'bg-amber-500',
     icon: '🟠',
   },
   Low: {
-    card: 'border-green-300 bg-gradient-to-br from-green-100 to-emerald-100 shadow-sm hover:shadow-md',
+    card: 'border-green-300 bg-gradient-to-br from-green-100 to-emerald-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group',
     badge: 'bg-green-600 text-white font-bold text-[10px] uppercase tracking-wider',
     bar: 'bg-green-500',
     icon: '🟢',

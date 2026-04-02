@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
  * Reusable Card component
  * Provides consistent styling for all card elements
  */
-function Card({ children, className = '', hover = true, padding = 'p-8' }) {
-  const baseClasses = 'w-full rounded-3xl bg-gray-50 border border-gray-200 transition-all duration-300'
-  const hoverClass = hover ? '' : ''
-  const shadowClass = 'shadow-2xl'
+function Card({ children, className = '', hover = true, padding = 'p-8 md:p-10' }) {
+  const baseClasses = 'w-full rounded-3xl bg-white/95 backdrop-blur border border-gray-200 transition-all duration-300'
+  const hoverClass = hover ? 'hover:shadow-xl hover:-translate-y-1' : ''
+  const shadowClass = 'shadow-sm'
 
   const fullClassName = `${baseClasses} ${shadowClass} ${hoverClass} ${padding} ${className}`
 

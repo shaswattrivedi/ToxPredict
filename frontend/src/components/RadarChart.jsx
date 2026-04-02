@@ -54,14 +54,35 @@ function CustomTooltip({ active, payload }) {
 }
 
 function CustomAngleTick(props) {
-  const { x, y, payload, probabilityMap } = props
+  const { x, y, cx, cy, payload, probabilityMap } = props
   const probability = probabilityMap[payload.value] ?? 0
   const color = getRiskColor(probability)
 
+  // Calculate direction vector from center to push labels out slightly
+  const dx = x - cx;
+  const dy = y - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const shiftX = dist > 0 ? (dx / dist) * 15 : 0;
+  const shiftY = dist > 0 ? (dy / dist) * 15 : 0;
+
+  const finalX = x + shiftX;
+  const finalY = y + shiftY;
+
   return (
-    <text x={x} y={y} fill={color} fontSize={13} fontWeight="bold" textAnchor="middle" dominantBaseline="central">
-      {shortenAssayName(payload.value)}
-    </text>
+    <g>
+      {/* Soft dark shadow to provide contrast against the white background */}
+      <text x={finalX} y={finalY + 2} fill="#94a3b8" fontSize={15} fontWeight="900" textAnchor="middle" dominantBaseline="central">
+        {shortenAssayName(payload.value)}
+      </text>
+      {/* Thin white halo to barely cut through grid lines without washing out */}
+      <text x={finalX} y={finalY} fill="none" stroke="#ffffff" strokeWidth={2} strokeLinejoin="round" fontSize={15} fontWeight="900" textAnchor="middle" dominantBaseline="central">
+        {shortenAssayName(payload.value)}
+      </text>
+      {/* Actual colored text */}
+      <text x={finalX} y={finalY} fill={color} fontSize={15} fontWeight="900" textAnchor="middle" dominantBaseline="central">
+        {shortenAssayName(payload.value)}
+      </text>
+    </g>
   )
 }
 
@@ -100,7 +121,7 @@ function RadarChart({ assayResults, height }) {
 
           <ResponsiveContainer width="100%" height={height || 400}>
             <RechartsRadar cx="50%" cy="50%" outerRadius="82%" data={data}>
-              <PolarGrid gridType="polygon" stroke="#E5E7EB" />
+              <PolarGrid gridType="polygon" stroke="#9CA3AF" strokeWidth={1.5} />
               <PolarAngleAxis
                 dataKey="assay"
                 tick={(props) => <CustomAngleTick {...props} probabilityMap={probabilityMap} />}
@@ -127,20 +148,20 @@ function RadarChart({ assayResults, height }) {
 
           {/* Risk Legend */}
           <div className="mt-8 grid grid-cols-3 gap-3">
-            <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-center">
-              <span className="text-lg">🔴</span>
-              <p className="text-[10px] uppercase tracking-wider font-bold text-red-900 mt-1">High Risk</p>
-              <p className="text-xs font-black text-red-700 mt-0.5">{'>'}70%</p>
+            <div className="rounded-2xl bg-gradient-to-br from-red-100 to-rose-100 border border-red-300 p-3 text-center shadow-md">
+              <span className="text-lg drop-shadow-sm">🔴</span>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-red-950 mt-1">High Risk</p>
+              <p className="text-xs font-black text-red-800 mt-0.5">{'>'}70%</p>
             </div>
-            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
-              <span className="text-lg">🟠</span>
-              <p className="text-[10px] uppercase tracking-wider font-bold text-amber-900 mt-1">Medium Risk</p>
-              <p className="text-xs font-black text-amber-700 mt-0.5">40-70%</p>
+            <div className="rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-300 p-3 text-center shadow-md">
+              <span className="text-lg drop-shadow-sm">🟠</span>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-amber-950 mt-1">Medium Risk</p>
+              <p className="text-xs font-black text-amber-800 mt-0.5">40-70%</p>
             </div>
-            <div className="rounded-lg bg-green-50 border border-green-200 p-3 text-center">
-              <span className="text-lg">🟢</span>
-              <p className="text-[10px] uppercase tracking-wider font-bold text-green-900 mt-1">Low Risk</p>
-              <p className="text-xs font-black text-green-700 mt-0.5">{'<'}40%</p>
+            <div className="rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 border border-green-300 p-3 text-center shadow-md">
+              <span className="text-lg drop-shadow-sm">🟢</span>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-green-950 mt-1">Low Risk</p>
+              <p className="text-xs font-black text-green-800 mt-0.5">{'<'}40%</p>
             </div>
           </div>
         </div>

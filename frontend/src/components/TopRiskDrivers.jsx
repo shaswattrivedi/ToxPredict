@@ -58,7 +58,7 @@ const getShortInsight = (insight, direction) => {
 const TopRiskDrivers = ({ shapFeatures, assayDisplayName, assayName }) => {
   if (!shapFeatures || shapFeatures.length === 0) {
     return (
-      <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300 min-h-[200px] flex items-center justify-center">
+      <div className="w-full rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group min-h-[200px] flex items-center justify-center">
         <p className="text-gray-500 font-medium">Analysis data unavailable</p>
       </div>
     );
@@ -71,7 +71,7 @@ const TopRiskDrivers = ({ shapFeatures, assayDisplayName, assayName }) => {
   const badgeClass = isNuclearReceptor ? 'text-blue-600 bg-blue-50' : 'text-amber-600 bg-amber-50';
 
   return (
-    <div className="w-full flex-1 flex flex-col rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300 min-h-[200px]">
+    <div className="w-full flex-1 flex flex-col rounded-3xl border border-gray-200 bg-white/95 backdrop-blur p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group min-h-[200px]">
       <div className="flex flex-col items-start mb-6">
         <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">
           Top Risk Drivers
