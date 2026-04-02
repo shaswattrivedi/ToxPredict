@@ -185,12 +185,13 @@ function CompoundSummary({
             <div className="flex-1">
               <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest">Drug-likeness Profile</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+              <div className="space-y-6">
                 
-                {/* Left Side: Lipinski & QED */}
-                <div className="space-y-6">
+                {/* Top Section: Lipinski & QED */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                  
                   {/* Lipinski Compliance */}
-                  <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+                  <div className="flex items-center justify-between rounded-xl bg-white p-4 border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
                     <p className="text-sm font-bold text-gray-900">Lipinski Rule of Five</p>
                     {drugLikeness?.lipinski_pass ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700 shadow-sm">
@@ -218,8 +219,8 @@ function CompoundSummary({
                   </div>
                 </div>
 
-                {/* Right Side: Properties Grid */}
-                <div className="grid grid-cols-2 gap-3">
+                {/* Bottom Section: Properties Grid */}
+                <div className="grid grid-cols-4 gap-4">
                   <div className="rounded-xl bg-white p-4 border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
                     <p className="text-xs text-gray-800 font-bold">Molecular Weight</p>
                     <p className="mt-1 text-base font-black text-gray-900">{Number(drugLikeness?.molecular_weight ?? 0).toFixed(1)} Da</p>

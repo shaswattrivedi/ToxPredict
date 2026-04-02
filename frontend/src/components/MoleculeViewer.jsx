@@ -15,29 +15,32 @@ function MoleculeViewer({
   cached,
 }) {
   
-  const [compoundName, setCompoundName] = useState('Molecule Structure')
+  const [compoundName, setCompoundName] = useState('Fetching Name...')
 
   useEffect(() => {
     let isMounted = true
 
     const fetchName = async () => {
+      setCompoundName('Fetching Name...')
       if (!smiles) {
-        if (isMounted) setCompoundName('Molecule Structure')
+        if (isMounted) setCompoundName('Unknown Compound')
         return
       }
       try {
         const response = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/${encodeURIComponent(smiles)}/synonyms/JSON`)
         if (response.ok) {
           const data = await response.json()
-          if (data.InformationList?.Information?.[0]?.Synonym?.[0]) {
-            if (isMounted) setCompoundName(data.InformationList.Information[0].Synonym[0])
+          if (data.InformationList?.Information?.[0]?.Synonym) {
+            const synonyms = data.InformationList.Information[0].Synonym;
+            const alphabeticSynonym = synonyms.find(s => /[A-Za-z]/.test(s)) || synonyms[0];
+            if (isMounted) setCompoundName(alphabeticSynonym.toUpperCase());
             return
           }
         }
         if (isMounted) setCompoundName('Unknown Compound')
       } catch (err) {
         console.error(err)
-        if (isMounted) setCompoundName('Molecule Structure')
+        if (isMounted) setCompoundName('Unknown Compound')
       }
     }
 
@@ -90,15 +93,20 @@ function MoleculeViewer({
               return (
               <div
                 key={`${alert.alert_type}-${alert.alert_name}-${index}`}
-                className="rounded-2xl bg-white border border-red-100 p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+                className="border-b border-gray-200 last:border-0 py-5 first:pt-0 last:pb-0"
               >
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-red-400"></div>
-                <div className="flex items-start gap-4 pl-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-600 font-black text-sm shrink-0">!</span>
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-red-500 mb-1">{displayType}</p>
-                    <p className="text-sm text-gray-900 font-black">{displayName}</p>
-                    <p className="text-sm font-medium text-gray-500 mt-2 leading-relaxed">{displayDesc}</p>
+                <div className="flex items-start gap-4">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-500 shadow-sm shrink-0">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  <div className="flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-base font-bold text-gray-900">{displayName}</p>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2.5 py-1 rounded-md mb-1">{displayType}</span>
+                    </div>
+                    <p className="text-sm font-medium text-gray-600 leading-relaxed">{displayDesc}</p>
                   </div>
                 </div>
               </div>
