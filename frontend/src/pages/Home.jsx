@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { usePrediction, useExamples } from '../hooks/usePrediction'
 import MoleculeViewer from '../components/MoleculeViewer'
+import TopRiskDrivers from '../components/TopRiskDrivers'
 import CompoundSummary from '../components/CompoundSummary'
 import Card from '../components/ui/Card'
 import Container from '../components/ui/Container'
@@ -86,9 +87,10 @@ function Home() {
             </Container>
           </div>
 
-          <div id="results-section" className="px-4 pb-6 sm:px-6 min-h-screen flex flex-col pt-12">
-            <Container className="max-w-7xl w-full mx-auto">
-            {/* Loading State */}
+          {(isLoading || isError || data) && (
+            <div id="results-section" className="px-4 pb-6 sm:px-6 min-h-screen flex flex-col pt-12">
+              <Container className="max-w-7xl w-full mx-auto">
+              {/* Loading State */}
             {isLoading ? (
               <div className="space-y-8 animate-fade-in">
                 <div className="h-64 animate-pulse rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200" />
@@ -150,21 +152,23 @@ function Home() {
 
                 {activeTab === 'summary' ? (
                   <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 flex flex-col space-y-6">
                       <MoleculeViewer
                         imageB64={data.molecule_image_b64}
                         smiles={data.smiles}
-                        overallRisk={data.overall_risk}
-                        overallScore={data.overall_risk_score}
-                        toxicCount={data.toxic_assay_count}
-                        processingTimeMs={data.processing_time_ms}
-                        drugLikeness={data.drug_likeness}
                         structuralAlerts={data.structural_alerts}
                         hasStructuralAlerts={data.has_structural_alerts}
                         cached={data.cached}
                       />
+                      {topAssay && (
+                        <TopRiskDrivers
+                          shapFeatures={data.top_shap_features}
+                          assayDisplayName={topAssay.display_name}
+                          assayName={topAssay.assay_name}
+                        />
+                      )}
                     </div>
-                    <div className="space-y-6 lg:col-span-2">
+                    <div className="lg:col-span-2 flex flex-col space-y-6">
                       <CompoundSummary
                         overallRisk={data.overall_risk}
                         overallScore={data.overall_risk_score}
@@ -198,6 +202,7 @@ function Home() {
             ) : null}
           </Container>
         </div>
+        )}
       </main>
 
       {/* Footer */}

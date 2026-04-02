@@ -170,8 +170,8 @@ function CompoundSummary({
             <div className="flex-1">
               <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Predictive Biological Narrative</h3>
               <ul className="text-sm leading-relaxed text-gray-800 font-medium space-y-3 list-disc marker:text-gray-400 pl-5">
-                {narrative.split('.').map(s => s.trim()).filter(Boolean).map((sentence, idx) => (
-                  <li key={idx}>{sentence}.</li>
+                {narrative.split(/\.\s+/).map(s => s.trim()).filter(Boolean).map((sentence, idx) => (
+                  <li key={idx}>{sentence}{sentence.endsWith('.') ? '' : '.'}</li>
                 ))}
               </ul>
             </div>
