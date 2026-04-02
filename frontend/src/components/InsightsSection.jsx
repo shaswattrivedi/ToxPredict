@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import Card from '../ui/Card'
-import Section from '../ui/Section'
-import RadarChart from '../RadarChart'
-import SHAPChart from '../SHAPChart'
+import Card from './Card'
+import Section from './Section'
+import RadarChart from './RadarChart'
+import SHAPChart from './SHAPChart'
 
 /**
  * InsightsSection component

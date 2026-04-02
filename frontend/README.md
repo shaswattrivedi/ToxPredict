@@ -1,16 +1,76 @@
-# React + Vite
+# ToxPredict Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React-based web interface for the ToxPredict drug toxicity prediction system.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** with Vite for fast development and builds
+- **Tailwind CSS v4** for utility-first styling
+- **React Query** for server state management
+- **Recharts** for data visualization (radar charts, bar charts)
+- **React Router** for client-side routing
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
+# Start development server
+npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── AssayGrid.jsx   # Displays toxicity assay results by category
+│   ├── Card.jsx        # Base card component
+│   ├── CompoundSummary.jsx  # Overall compound analysis
+│   ├── Header.jsx      # App header with navigation
+│   ├── Hero.jsx        # Landing page hero section
+│   ├── InputCard.jsx   # SMILES input wrapper
+│   ├── InsightsSection.jsx  # SHAP & radar chart insights
+│   ├── MoleculeViewer.jsx   # 2D structure + alerts
+│   ├── RadarChart.jsx  # Assay probability radar
+│   ├── RiskSummary.jsx # Overall risk assessment
+│   ├── SHAPChart.jsx   # Feature importance bar chart
+│   ├── SMILESInput.jsx # SMILES text input form
+│   ├── TopRiskDrivers.jsx   # Top SHAP features
+│   └── ToxicityCard.jsx     # Individual assay result
+├── pages/
+│   ├── Home.jsx        # Main prediction interface
+│   └── About.jsx       # Project information
+├── hooks/
+│   └── usePrediction.js # React Query hooks for API
+├── api/
+│   └── toxicity.js     # API client functions
+├── assets/             # Static images
+├── App.jsx             # Router setup
+├── main.jsx            # App entry point
+└── index.css           # Global styles + Tailwind
+```
+
+## Environment Variables
+
+Create `.env.development` and `.env.production` files:
+
+```env
+VITE_API_URL=http://localhost:8000  # Backend API URL
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with HMR |
+| `npm run build` | Production build |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |

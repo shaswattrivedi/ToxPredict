@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import Header from '../components/ui/Header'
-import Container from '../components/ui/Container'
+import Header from '../components/Header'
+import Container from '../components/Container'
 
 const PERFORMANCE_ROWS = [
   ['NR-AR', 'Androgen Receptor', '0.759', 'Nuclear Receptor'],

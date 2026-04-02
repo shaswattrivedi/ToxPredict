@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import SMILESInput from '../SMILESInput'
+import SMILESInput from './SMILESInput'
 
 function InputCard({ onSubmit, isLoading, examples }) {
   return (

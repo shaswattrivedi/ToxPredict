@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import ExampleChips from './analysis/ExampleChips'
-import AnalyzeButton from './analysis/AnalyzeButton'
+import ExampleChips from './ExampleChips'
+import AnalyzeButton from './AnalyzeButton'
 
 function SMILESInput({ onSubmit, isLoading, examples }) {
   const [smiles, setSmiles] = useState('')

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import Section from '../ui/Section'
-import ToxicityCard from '../ToxicityCard'
+import Section from './Section'
+import ToxicityCard from './ToxicityCard'
 
 /**
  * AssayGrid component

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import Card from '../ui/Card'
+import Card from './Card'
 
 /**
  * RiskSummary component
