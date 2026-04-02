@@ -1,0 +1,382 @@
+import { useMemo, useState } from 'react'
+import {
+  RadarChart as RechartsRadar,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from 'recharts'
+
+import { predictToxicity } from '../api/toxicity'
+
+const assayColumns = [
+  'NR-AR',
+  'NR-AR-LBD',
+  'NR-AhR',
+  'NR-Aromatase',
+  'NR-ER',
+  'NR-ER-LBD',
+  'NR-PPAR-gamma',
+  'SR-ARE',
+  'SR-ATAD5',
+  'SR-HSE',
+  'SR-MMP',
+  'SR-p53',
+]
+
+const assayDisplayNames = {
+  'NR-AR': 'Androgen Receptor',
+  'NR-AR-LBD': 'Androgen Receptor LBD',
+  'NR-AhR': 'Aryl Hydrocarbon Receptor',
+  'NR-Aromatase': 'Aromatase',
+  'NR-ER': 'Estrogen Receptor Alpha',
+  'NR-ER-LBD': 'Estrogen Receptor LBD',
+  'NR-PPAR-gamma': 'PPAR Gamma',
+  'SR-ARE': 'Antioxidant Response',
+  'SR-ATAD5': 'Genotoxicity (ATAD5)',
+  'SR-HSE': 'Heat Shock Response',
+  'SR-MMP': 'Mitochondrial Membrane',
+  'SR-p53': 'p53 Tumor Suppressor',
+}
+
+const EXAMPLES = {
+  aspirin: 'CC(=O)Oc1ccccc1C(=O)O',
+  pyrene: 'c1ccc2c(c1)ccc1cccc3ccc2c1c3',
+}
+
+function shortAssayName(assayCode) {
+  const fullName = assayDisplayNames[assayCode] || assayCode
+  return fullName
+    .replace(/Receptor/gi, '')
+    .replace(/Response/gi, '')
+    .replace(/Tumor Suppressor/gi, 'p53')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function parseApiError(error, fallback) {
+  const detail = error?.response?.data?.detail
+  if (typeof detail === 'string') {
+    return detail
+  }
+  if (typeof detail?.detail === 'string') {
+    return detail.detail
+  }
+  if (typeof error?.message === 'string') {
+    return error.message
+  }
+  return fallback
+}
+
+function riskBadgeClasses(risk) {
+  if (risk === 'High') {
+    return 'bg-red-500/20 border border-red-400/40 text-red-200'
+  }
+  if (risk === 'Medium') {
+    return 'bg-amber-500/20 border border-amber-400/40 text-amber-200'
+  }
+  return 'bg-emerald-500/20 border border-emerald-400/40 text-emerald-200'
+}
+
+function getRelativeCellClasses(valueA, valueB, preference = 'lower') {
+  if (valueA === valueB) {
+    return {
+      a: 'bg-gray-50 text-gray-700 border border-gray-200',
+      b: 'bg-gray-50 text-gray-700 border border-gray-200',
+    }
+  }
+
+  const aBetter = preference === 'higher' ? valueA > valueB : valueA < valueB
+
+  return {
+    a: aBetter
+      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+      : 'bg-red-50 text-red-700 border border-red-200',
+    b: aBetter
+      ? 'bg-red-50 text-red-700 border border-red-200'
+      : 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  }
+}
+
+function ComparisonMode() {
+  const [smilesA, setSmilesA] = useState('')
+  const [smilesB, setSmilesB] = useState('')
+  const [resultA, setResultA] = useState(null)
+  const [resultB, setResultB] = useState(null)
+  const [errorA, setErrorA] = useState('')
+  const [errorB, setErrorB] = useState('')
+  const [isComparing, setIsComparing] = useState(false)
+
+  const compareData = useMemo(() => {
+    if (!resultA || !resultB) {
+      return []
+    }
+
+    return assayColumns.map((assay) => ({
+      assay: shortAssayName(assay),
+      probabilityA:
+        resultA.assay_results.find((r) => r.assay_name === assay)?.probability * 100 || 0,
+      probabilityB:
+        resultB.assay_results.find((r) => r.assay_name === assay)?.probability * 100 || 0,
+    }))
+  }, [resultA, resultB])
+
+  const handleCompare = async () => {
+    const left = smilesA.trim()
+    const right = smilesB.trim()
+
+    setErrorA('')
+    setErrorB('')
+    setResultA(null)
+    setResultB(null)
+
+    if (!left) {
+      setErrorA('Please enter a valid SMILES string for Compound A.')
+    }
+    if (!right) {
+      setErrorB('Please enter a valid SMILES string for Compound B.')
+    }
+    if (!left || !right) {
+      return
+    }
+
+    setIsComparing(true)
+
+    const [responseA, responseB] = await Promise.allSettled([
+      predictToxicity(left),
+      predictToxicity(right),
+    ])
+
+    if (responseA.status === 'fulfilled' && responseB.status === 'fulfilled') {
+      setResultA(responseA.value)
+      setResultB(responseB.value)
+    } else {
+      if (responseA.status === 'rejected') {
+        setErrorA(parseApiError(responseA.reason, 'Invalid SMILES for Compound A.'))
+      }
+      if (responseB.status === 'rejected') {
+        setErrorB(parseApiError(responseB.reason, 'Invalid SMILES for Compound B.'))
+      }
+    }
+
+    setIsComparing(false)
+  }
+
+  const hasResults = Boolean(resultA && resultB)
+
+  const riskRank = {
+    Low: 1,
+    Medium: 2,
+    High: 3,
+  }
+
+  const overallScoreA = (resultA?.overall_risk_score || 0) * 100
+  const overallScoreB = (resultB?.overall_risk_score || 0) * 100
+  const flaggedA = resultA?.toxic_assay_count || 0
+  const flaggedB = resultB?.toxic_assay_count || 0
+  const lipinskiA = Boolean(resultA?.drug_likeness?.lipinski_pass)
+  const lipinskiB = Boolean(resultB?.drug_likeness?.lipinski_pass)
+  const qedA = resultA?.drug_likeness?.qed_score || 0
+  const qedB = resultB?.drug_likeness?.qed_score || 0
+
+  const riskCellClass = getRelativeCellClasses(
+    riskRank[resultA?.overall_risk] || 99,
+    riskRank[resultB?.overall_risk] || 99,
+    'lower',
+  )
+  const scoreCellClass = getRelativeCellClasses(overallScoreA, overallScoreB, 'lower')
+  const flaggedCellClass = getRelativeCellClasses(flaggedA, flaggedB, 'lower')
+  const lipinskiCellClass = getRelativeCellClasses(Number(lipinskiA), Number(lipinskiB), 'higher')
+  const qedCellClass = getRelativeCellClasses(qedA, qedB, 'higher')
+
+  return (
+    <div className="rounded-3xl border border-white/15 bg-black/25 backdrop-blur-lg shadow-xl p-4 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="text-sm sm:text-base font-bold uppercase tracking-wider text-white">Compound Comparison</h2>
+        <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">Side-by-side toxicity profile</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <label className="text-xs font-bold uppercase tracking-widest text-gray-300">Compound A</label>
+          <textarea
+            value={smilesA}
+            onChange={(event) => {
+              setSmilesA(event.target.value)
+              setErrorA('')
+            }}
+            placeholder="Enter SMILES for Compound A"
+            className="mt-2 h-16 w-full rounded-lg border border-white/15 bg-black/30 px-3 py-2 text-xs text-gray-100 placeholder:text-gray-500 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errorA ? <p className="mt-2 text-xs text-red-300">{errorA}</p> : null}
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => {
+                setSmilesA(EXAMPLES.aspirin)
+                setErrorA('')
+              }}
+              className="rounded-md border border-blue-400/35 bg-blue-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-200 hover:bg-blue-500/20"
+            >
+              Aspirin
+            </button>
+            <button
+              onClick={() => {
+                setSmilesA(EXAMPLES.pyrene)
+                setErrorA('')
+              }}
+              className="rounded-md border border-blue-400/35 bg-blue-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-200 hover:bg-blue-500/20"
+            >
+              Pyrene
+            </button>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <label className="text-xs font-bold uppercase tracking-widest text-gray-300">Compound B</label>
+          <textarea
+            value={smilesB}
+            onChange={(event) => {
+              setSmilesB(event.target.value)
+              setErrorB('')
+            }}
+            placeholder="Enter SMILES for Compound B"
+            className="mt-2 h-16 w-full rounded-lg border border-white/15 bg-black/30 px-3 py-2 text-xs text-gray-100 placeholder:text-gray-500 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errorB ? <p className="mt-2 text-xs text-red-300">{errorB}</p> : null}
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => {
+                setSmilesB(EXAMPLES.aspirin)
+                setErrorB('')
+              }}
+              className="rounded-md border border-blue-400/35 bg-blue-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-200 hover:bg-blue-500/20"
+            >
+              Aspirin
+            </button>
+            <button
+              onClick={() => {
+                setSmilesB(EXAMPLES.pyrene)
+                setErrorB('')
+              }}
+              className="rounded-md border border-blue-400/35 bg-blue-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-200 hover:bg-blue-500/20"
+            >
+              Pyrene
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={handleCompare}
+        disabled={isComparing}
+        className="mt-4 w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2.5 text-sm font-bold tracking-wide text-white transition-all hover:from-blue-500 hover:to-cyan-400 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {isComparing ? 'Comparing...' : 'Compare'}
+      </button>
+
+      {isComparing ? (
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {['Compound A', 'Compound B'].map((name) => (
+            <div key={name} className="rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col items-center justify-center min-h-[160px]">
+              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-300">{name}</p>
+              <p className="text-[11px] text-gray-500 mt-1">Running prediction pipeline...</p>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {hasResults ? (
+        <div className="mt-6 space-y-6">
+          <div className="overflow-x-auto rounded-2xl border border-white/10">
+            <table className="min-w-full text-sm text-gray-100">
+              <thead className="bg-white/5">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs uppercase tracking-widest text-gray-400">Metric</th>
+                  <th className="px-4 py-3 text-left text-xs uppercase tracking-widest text-gray-400">Compound A</th>
+                  <th className="px-4 py-3 text-left text-xs uppercase tracking-widest text-gray-400">Compound B</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                <tr>
+                  <td className="px-4 py-3 text-gray-300">Overall Risk</td>
+                  <td className={`px-4 py-3 ${riskCellClass.a}`}>
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${riskBadgeClasses(resultA.overall_risk)}`}>
+                      {resultA.overall_risk}
+                    </span>
+                  </td>
+                  <td className={`px-4 py-3 ${riskCellClass.b}`}>
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide ${riskBadgeClasses(resultB.overall_risk)}`}>
+                      {resultB.overall_risk}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 text-gray-300">Ensemble Score</td>
+                  <td className={`px-4 py-3 font-semibold ${scoreCellClass.a}`}>{overallScoreA.toFixed(1)}%</td>
+                  <td className={`px-4 py-3 font-semibold ${scoreCellClass.b}`}>{overallScoreB.toFixed(1)}%</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 text-gray-300">Flagged Assays</td>
+                  <td className={`px-4 py-3 font-semibold ${flaggedCellClass.a}`}>{flaggedA}/12</td>
+                  <td className={`px-4 py-3 font-semibold ${flaggedCellClass.b}`}>{flaggedB}/12</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 text-gray-300">Lipinski</td>
+                  <td className={`px-4 py-3 font-semibold ${lipinskiCellClass.a}`}>{lipinskiA ? 'Pass' : 'Fail'}</td>
+                  <td className={`px-4 py-3 font-semibold ${lipinskiCellClass.b}`}>{lipinskiB ? 'Pass' : 'Fail'}</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 text-gray-300">QED Score</td>
+                  <td className={`px-4 py-3 font-semibold ${qedCellClass.a}`}>{qedA.toFixed(2)}</td>
+                  <td className={`px-4 py-3 font-semibold ${qedCellClass.b}`}>{qedB.toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-3">Assay Probability Comparison</h3>
+            <ResponsiveContainer width="100%" height={360}>
+              <RechartsRadar data={compareData} outerRadius="78%">
+                <PolarGrid stroke="#6B7280" />
+                <PolarAngleAxis dataKey="assay" tick={{ fill: '#D1D5DB', fontSize: 11, fontWeight: 700 }} />
+                <PolarRadiusAxis domain={[0, 100]} tick={{ fill: '#9CA3AF', fontSize: 10 }} tickFormatter={(v) => `${v}%`} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#0f172a',
+                    border: '1px solid #334155',
+                    borderRadius: '0.5rem',
+                    color: '#e5e7eb',
+                  }}
+                />
+                <Radar
+                  dataKey="probabilityA"
+                  fill="#EF4444"
+                  fillOpacity={0.2}
+                  stroke="#EF4444"
+                  strokeWidth={2}
+                  name="Compound A"
+                />
+                <Radar
+                  dataKey="probabilityB"
+                  fill="#3B82F6"
+                  fillOpacity={0.2}
+                  stroke="#3B82F6"
+                  strokeWidth={2}
+                  name="Compound B"
+                />
+                <Legend wrapperStyle={{ color: '#D1D5DB' }} />
+              </RechartsRadar>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+export default ComparisonMode

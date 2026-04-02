@@ -1,0 +1,25 @@
+--- src/pages/Home.jsx
++++ src/pages/Home.jsx
+@@ -60,20 +60,6 @@
+           <Header
+             title="ToxPredict"
+             tagline="Drug Toxicity Prediction with Explainability"
+-            leftAction={(
+-              <button
+-                onClick={() => setShowComparison(!showComparison)}
+-                className="text-xs border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 rounded px-3 py-1 transition-colors"
+-              >
+-                {showComparison ? 'Hide Comparison' : '⚖️ Compare Mode'}
+-              </button>
+-            )}
+           />
+-
+-          {showComparison && (
+-            <div className="pt-24">
+-              <div className="max-w-7xl mx-auto px-4 mb-6">
+-                <ComparisonMode />
+-              </div>
+-            </div>
+-          )}
+ 
+           <main className={`flex-1 flex flex-col w-full transition-all duration-500`}>

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About'
+import Compare from './pages/Compare'
 
 export default function App() {
     useEffect(() => {
@@ -21,6 +22,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/compare" element={<Compare />} />
             </Routes>
         </BrowserRouter>
     )
