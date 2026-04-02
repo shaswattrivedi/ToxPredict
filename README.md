@@ -160,4 +160,4 @@ This project was created for the CodeCure Hackathon @ IIT BHU SPIRIT 2026.
 
 ## 👥 Team
 
-Built with ❤️ for advancing computational drug safety research.
+Built by Team Tox for advancing computational drug safety research.
