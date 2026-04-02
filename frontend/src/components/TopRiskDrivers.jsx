@@ -37,17 +37,22 @@ const getShortInsight = (insight, direction) => {
   const prefix = isInc ? "Increases risk via" : "Decreases risk via";
 
   const lower = insight.toLowerCase();
-  if (lower.includes("lipophilicity")) return `${prefix} high lipophilicity`;
-  if (lower.includes("substructure pattern")) return `${prefix} a specific substructure alert`;
+  if (lower.includes("lipophilicity") || lower.includes("logp")) return `${prefix} high lipophilicity`;
+  if (lower.includes("substructure pattern") || lower.includes("fingerprint")) return `${prefix} a specific substructure alert`;
   if (lower.includes("molecular weight") || lower.includes("large molecule")) return `${prefix} molecular size/weight`;
   if (lower.includes("heavy atom count") || lower.includes("molecular complexity")) return `${prefix} molecular complexity`;
   if (lower.includes("aromatic")) return `${prefix} aromatic rings`;
+  if (lower.includes("ring count") || lower.includes("ring")) return `${prefix} ring count`;
+  if (lower.includes("rotatable")) return `${prefix} rotatable bonds`;
   if (lower.includes("polar") || lower.includes("tpsa")) return `${prefix} polar surface area`;
-  if (lower.includes("hydrogen bond")) return `${prefix} hydrogen bonding`;
+  if (lower.includes("hydrogen bond") || lower.includes("h-bond")) return `${prefix} hydrogen bonding`;
   if (lower.includes("sp3")) return `${prefix} Sp3 carbon fraction`;
+  if (lower.includes("aldehyde")) return `${prefix} aldehyde groups`;
+  if (lower.includes("epoxide")) return `${prefix} epoxide groups`;
+  if (lower.includes("halogen")) return `${prefix} halogens`;
+  if (lower.includes("amine") || lower.includes("nh2") || lower.includes("nh1")) return `${prefix} amines`;
   
-  const words = insight.split(' ');
-  return words.length > 5 ? words.slice(0, 5).join(' ') + '...' : insight;
+  return `${prefix} this structural feature`;
 };
 
 const TopRiskDrivers = ({ shapFeatures, assayDisplayName, assayName }) => {
@@ -68,7 +73,7 @@ const TopRiskDrivers = ({ shapFeatures, assayDisplayName, assayName }) => {
   return (
     <div className="w-full flex-1 flex flex-col rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300 min-h-[200px]">
       <div className="flex flex-col items-start mb-6">
-        <h3 className="text-sm font-bold text-gray-900 mb-3">
+        <h3 className="text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">
           Top Risk Drivers
         </h3>
         <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${badgeClass}`}>

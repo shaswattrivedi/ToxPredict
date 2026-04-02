@@ -79,7 +79,7 @@ function MoleculeViewer({
 
       {/* Structural Alerts Card */}
       <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
-        <h3 className="text-sm font-bold text-gray-900 mb-5">Structural Alerts</h3>
+        <h3 className="text-sm font-bold text-gray-900 mb-5 uppercase tracking-widest">Structural Alerts</h3>
         
         {hasStructuralAlerts ? (
           <div className="space-y-4">
