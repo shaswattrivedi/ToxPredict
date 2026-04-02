@@ -12,16 +12,14 @@ function InsightsSection({ assayResults, topAssay, shapFeatures }) {
   return (
     <div className="space-y-8">
       {/* Risk Profile Chart */}
-      <Section title="Risk Profile Overview" subtitle="Toxicity predictions across all 12 biological assay endpoints">
-        <Card>
-          <div className="md:hidden">
-            <RadarChart assayResults={assayResults} height={280} />
-          </div>
-          <div className="hidden md:block">
-            <RadarChart assayResults={assayResults} height={380} />
-          </div>
-        </Card>
-      </Section>
+      <section className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-sm transition-all duration-300">
+        <div className="md:hidden w-full flex justify-center">
+          <RadarChart assayResults={assayResults} height={320} />
+        </div>
+        <div className="hidden md:flex w-full justify-center">
+          <RadarChart assayResults={assayResults} height={520} />
+        </div>
+      </section>
 
       {/* SHAP Feature Importance */}
       <SHAPChart

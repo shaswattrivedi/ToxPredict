@@ -54,16 +54,16 @@ function Home() {
     }`
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#1d1f3b] via-[#1a1b2e] to-[#121321] text-gray-100">
+    <div className="relative min-h-[100dvh] bg-gradient-to-br from-[#1d1f3b] via-[#1a1b2e] to-[#121321] text-gray-100 isolate">
       {/* Subtle Chemical Overlay */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40 bg-chemical-pattern transition-opacity duration-1000" aria-hidden="true" />
+      <div className="fixed inset-0 z-[-1] pointer-events-none opacity-40 bg-chemical-pattern transition-opacity duration-1000 transform-gpu" aria-hidden="true" />
       
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col min-h-[100dvh] transform-gpu">
         <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
         <main className={`flex-1 flex flex-col w-full transition-all duration-500`}>
           {/* Landing viewport exactly preserved */}
-          <div className="min-h-screen flex flex-col justify-center pt-28 pb-12">
+          <div className="min-h-[100dvh] flex flex-col justify-center pt-28 pb-12">
             <Container className="max-w-7xl w-full mx-auto">
               {/* Hero Section - Strict two-column layout */}
               <div className="px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
@@ -88,7 +88,7 @@ function Home() {
           </div>
 
           {(isLoading || isError || data) && (
-            <div id="results-section" className="px-4 pb-6 sm:px-6 min-h-screen flex flex-col pt-12">
+            <div id="results-section" className="px-4 pb-6 sm:px-6 min-h-[100dvh] flex flex-col pt-12">
               <Container className="max-w-7xl w-full mx-auto">
               {/* Loading State */}
             {isLoading ? (

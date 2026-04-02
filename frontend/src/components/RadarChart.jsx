@@ -59,7 +59,7 @@ function CustomAngleTick(props) {
   const color = getRiskColor(probability)
 
   return (
-    <text x={x} y={y} fill={color} fontSize={10} textAnchor="middle" dominantBaseline="central">
+    <text x={x} y={y} fill={color} fontSize={13} fontWeight="bold" textAnchor="middle" dominantBaseline="central">
       {shortenAssayName(payload.value)}
     </text>
   )
@@ -90,55 +90,59 @@ function RadarChart({ assayResults, height }) {
   }, {})
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-gray-900">Toxicity Risk Profile</h3>
-        <p className="text-sm text-gray-600 mt-1">All 12 biological assay endpoints visualized simultaneously</p>
-      </div>
+    <div className="w-full">
+      <div className="flex gap-4">
+        <div className="flex-1 w-full">
+          <div className="mb-6">
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest">Toxicity Risk Profile</h3>
+            <p className="text-[10px] uppercase font-bold text-gray-500 mt-1 tracking-wider">All 12 biological assay endpoints visualized</p>
+          </div>
 
-      <ResponsiveContainer width="100%" height={height || 400}>
-        <RechartsRadar cx="50%" cy="50%" outerRadius="70%" data={data}>
-          <PolarGrid gridType="polygon" stroke="#E5E7EB" />
-          <PolarAngleAxis
-            dataKey="assay"
-            tick={(props) => <CustomAngleTick {...props} probabilityMap={probabilityMap} />}
-          />
-          <PolarRadiusAxis
-            angle={30}
-            domain={[0, 100]}
-            tickCount={4}
-            tick={{ fontSize: 10, fill: '#9CA3AF', fontWeight: 500 }}
-            tickFormatter={(v) => `${v}%`}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Radar
-            name="Toxicity Risk"
-            dataKey="probability"
-            stroke={radarColor}
-            fill={radarColor}
-            fillOpacity={0.15}
-            strokeWidth={2.5}
-          />
-          <Legend content={() => null} />
-        </RechartsRadar>
-      </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height={height || 400}>
+            <RechartsRadar cx="50%" cy="50%" outerRadius="82%" data={data}>
+              <PolarGrid gridType="polygon" stroke="#E5E7EB" />
+              <PolarAngleAxis
+                dataKey="assay"
+                tick={(props) => <CustomAngleTick {...props} probabilityMap={probabilityMap} />}
+              />
+              <PolarRadiusAxis
+                angle={30}
+                domain={[0, 100]}
+                tickCount={4}
+                tick={{ fontSize: 12, fill: '#9CA3AF', fontWeight: 'bold' }}
+                tickFormatter={(v) => `${v}%`}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Radar
+                name="Toxicity Risk"
+                dataKey="probability"
+                stroke={radarColor}
+                fill={radarColor}
+                fillOpacity={0.15}
+                strokeWidth={2.5}
+              />
+              <Legend content={() => null} />
+            </RechartsRadar>
+          </ResponsiveContainer>
 
-      {/* Risk Legend */}
-      <div className="mt-6 grid grid-cols-3 gap-3">
-        <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-center">
-          <span className="text-lg">🔴</span>
-          <p className="text-xs font-semibold text-red-900 mt-1">High Risk</p>
-          <p className="text-xs text-red-700 mt-0.5">{'>'}70%</p>
-        </div>
-        <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
-          <span className="text-lg">🟠</span>
-          <p className="text-xs font-semibold text-amber-900 mt-1">Medium Risk</p>
-          <p className="text-xs text-amber-700 mt-0.5">40-70%</p>
-        </div>
-        <div className="rounded-lg bg-green-50 border border-green-200 p-3 text-center">
-          <span className="text-lg">🟢</span>
-          <p className="text-xs font-semibold text-green-900 mt-1">Low Risk</p>
-          <p className="text-xs text-green-700 mt-0.5">{'<'}40%</p>
+          {/* Risk Legend */}
+          <div className="mt-8 grid grid-cols-3 gap-3">
+            <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-center">
+              <span className="text-lg">🔴</span>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-red-900 mt-1">High Risk</p>
+              <p className="text-xs font-black text-red-700 mt-0.5">{'>'}70%</p>
+            </div>
+            <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
+              <span className="text-lg">🟠</span>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-amber-900 mt-1">Medium Risk</p>
+              <p className="text-xs font-black text-amber-700 mt-0.5">40-70%</p>
+            </div>
+            <div className="rounded-lg bg-green-50 border border-green-200 p-3 text-center">
+              <span className="text-lg">🟢</span>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-green-900 mt-1">Low Risk</p>
+              <p className="text-xs font-black text-green-700 mt-0.5">{'<'}40%</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

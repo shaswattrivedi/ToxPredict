@@ -5,9 +5,9 @@ function Header({ title }) {
   return (
     <div className="absolute top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6 pointer-events-none">
       
-      <a href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
+      <Link to="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
         <h1 className="text-4xl font-black tracking-tight text-white drop-shadow-md">{title}</h1>
-      </a>
+      </Link>
       
       <div className="flex items-center gap-6 pointer-events-auto">
         <Link

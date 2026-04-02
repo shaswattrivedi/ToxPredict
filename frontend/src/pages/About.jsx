@@ -37,11 +37,11 @@ const FRONTEND_STACK = [
 
 function About() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#1d1f3b] via-[#1a1b2e] to-[#121321] text-gray-100">
+    <div className="relative min-h-[100dvh] bg-gradient-to-br from-[#1d1f3b] via-[#1a1b2e] to-[#121321] text-gray-100 isolate">
       {/* Subtle Chemical Overlay */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40 bg-chemical-pattern transition-opacity duration-1000" aria-hidden="true" />
+      <div className="fixed inset-0 z-[-1] pointer-events-none opacity-40 bg-chemical-pattern transition-opacity duration-1000 transform-gpu" aria-hidden="true" />
       
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col min-h-[100dvh] transform-gpu">
         <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
         <main className="flex-1 pt-20">

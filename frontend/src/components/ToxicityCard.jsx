@@ -18,20 +18,20 @@ const ASSAY_TOOLTIPS = {
 
 const RISK_STYLES = {
   High: {
-    card: 'border-red-300 bg-gradient-to-br from-red-50 to-rose-50 shadow-sm hover:shadow-md',
-    badge: 'bg-red-100 text-red-700 border border-red-200 font-semibold',
+    card: 'border-red-300 bg-gradient-to-br from-red-100 to-rose-100 shadow-sm hover:shadow-md',
+    badge: 'bg-red-600 text-white font-bold text-[10px] uppercase tracking-wider',
     bar: 'bg-red-500',
     icon: '🔴',
   },
   Medium: {
-    card: 'border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm hover:shadow-md',
-    badge: 'bg-amber-100 text-amber-700 border border-amber-200 font-semibold',
+    card: 'border-amber-300 bg-gradient-to-br from-amber-100 to-orange-100 shadow-sm hover:shadow-md',
+    badge: 'bg-amber-600 text-white font-bold text-[10px] uppercase tracking-wider',
     bar: 'bg-amber-500',
     icon: '🟠',
   },
   Low: {
-    card: 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 shadow-sm hover:shadow-md',
-    badge: 'bg-green-100 text-green-700 border border-green-200 font-semibold',
+    card: 'border-green-300 bg-gradient-to-br from-green-100 to-emerald-100 shadow-sm hover:shadow-md',
+    badge: 'bg-green-600 text-white font-bold text-[10px] uppercase tracking-wider',
     bar: 'bg-green-500',
     icon: '🟢',
   },
@@ -46,14 +46,14 @@ function ToxicityCard({ assay }) {
 
   return (
     <div
-      className={`rounded-xl border p-5 transition-all duration-200 hover:scale-[1.02] cursor-pointer ${styles.card}`}
+      className={`rounded-xl border p-4 transition-all duration-200 hover:scale-[1.02] cursor-pointer ${styles.card}`}
     >
       {/* Header */}
-      <div className="mb-4 flex items-start justify-between gap-3">
+      <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg">{styles.icon}</span>
-            <h3 className="truncate text-sm font-semibold text-gray-900">{assay.display_name}</h3>
+            <span className="text-sm">{styles.icon}</span>
+            <h3 className="truncate text-sm font-bold text-gray-900">{assay.display_name}</h3>
             <button
               type="button"
               className="ml-auto flex-shrink-0 relative inline-flex cursor-help items-center text-gray-400 hover:text-gray-600 transition"
@@ -68,21 +68,21 @@ function ToxicityCard({ assay }) {
               ) : null}
             </button>
           </div>
-          <p className="text-xs text-gray-600 font-mono">{assay.assay_name}</p>
+          <p className="text-[10px] text-gray-600 font-mono font-medium">{assay.assay_name}</p>
         </div>
 
-        <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${styles.badge}`}>
+        <span className={`shrink-0 rounded-full px-2.5 py-1 ${styles.badge}`}>
           {assay.risk_level}
         </span>
       </div>
 
       {/* Progress Bar */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-gray-700">Toxicity Probability</label>
-          <span className="text-sm font-bold text-gray-900">{probabilityPercent.toFixed(1)}%</span>
+          <label className="text-[10px] uppercase font-bold text-gray-700 tracking-wider">Toxicity Prob</label>
+          <span className="text-sm font-black text-gray-900">{probabilityPercent.toFixed(1)}%</span>
         </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-200 border border-gray-300">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-white/50 border border-gray-300">
           <div
             className={`h-full rounded-full transition-all duration-500 ${styles.bar}`}
             style={{ width: `${probabilityPercent}%` }}
@@ -91,8 +91,9 @@ function ToxicityCard({ assay }) {
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-gray-300/50 text-xs text-gray-600">
-        Confidence: <span className="font-semibold">{assay.confidence}</span>
+      <div className="mt-3 pt-2 border-t border-gray-300/50 flex items-center justify-between">
+        <span className="text-[10px] uppercase font-bold text-gray-600 tracking-wider">Confidence</span>
+        <span className="text-xs font-bold text-gray-800">{assay.confidence}</span>
       </div>
     </div>
   )

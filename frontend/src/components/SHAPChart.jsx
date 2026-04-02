@@ -86,69 +86,78 @@ function SHAPChart({ shapFeatures, assayName, assayDisplayName }) {
   }
 
   return (
-    <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
-      <div className="mb-6">
-        <h3 className="text-lg font-bold text-gray-900">Molecular Drivers</h3>
-        <p className="text-sm text-gray-600 mt-1">{assayDisplayName} — Top 10 features by SHAP importance</p>
-        <p className="text-xs text-gray-500 mt-2 font-mono">Assay: {assayName}</p>
-      </div>
+    <section className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-sm transition-all duration-300">
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <div className="mb-6 flex justify-between items-start">
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest">Molecular Drivers</h3>
+              <p className="text-[10px] uppercase font-bold text-gray-500 mt-1 tracking-wider">{assayDisplayName} — Top 10 Features</p>
+            </div>
+            <div className="text-[10px] uppercase font-bold text-gray-400 bg-white border border-gray-200 px-2 py-1 rounded-md tracking-widest font-mono">
+              Assay: {assayName}
+            </div>
+          </div>
 
-      {/* Legend */}
-      <div className="mb-4 flex gap-4">
-        <div className="flex items-center gap-2">
-          <div className="h-2.5 w-6 rounded bg-red-500" />
-          <span className="text-xs font-medium text-gray-700">Increases Toxicity</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-2.5 w-6 rounded bg-green-500" />
-          <span className="text-xs font-medium text-gray-700">Reduces Toxicity</span>
-        </div>
-      </div>
+          {/* Legend */}
+          <div className="mb-6 flex gap-4 bg-white/50 border border-gray-200 p-2.5 rounded-xl w-fit drop-shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="h-2.5 w-6 rounded bg-red-500 shadow-sm" />
+              <span className="text-[10px] uppercase font-bold text-gray-700 tracking-wider">Increases Toxicity</span>
+            </div>
+            <div className="flex items-center gap-2 ml-4">
+              <div className="h-2.5 w-6 rounded bg-green-500 shadow-sm" />
+              <span className="text-[10px] uppercase font-bold text-gray-700 tracking-wider">Reduces Toxicity</span>
+            </div>
+          </div>
 
-      <ResponsiveContainer width="100%" height={Math.max(320, features.length * 40)}>
-        <BarChart
-          data={features}
-          layout="vertical"
-          margin={{ top: 5, right: 60, left: 160, bottom: 40 }}
-        >
-          <CartesianGrid horizontal={false} strokeDasharray="4 3" opacity={0.2} />
-          <ReferenceLine x={0} stroke="#D1D5DB" strokeWidth={1.5} />
-          <XAxis
-            type="number"
-            tickFormatter={(v) => Number(v).toFixed(2)}
-            tick={{ fontSize: 11, fill: '#6B7280' }}
-            label={{
-              value: 'Reduces toxicity ← | → Increases toxicity',
-              position: 'insideBottom',
-              offset: -30,
-              style: { fontSize: 11, fill: '#6B7280', fontWeight: 500 },
-            }}
-          />
-          <YAxis
-            dataKey="displayName"
-            type="category"
-            width={155}
-            tick={{ fontSize: 11, fill: '#374151', fontWeight: 500 }}
-          />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(59, 130, 246, 0.08)' }} />
-          <Bar dataKey="value" radius={[0, 6, 6, 0]} isAnimationActive={true} animationDuration={500}>
-            {features.map((entry) => (
-              <Cell
-                key={`${entry.fullName}-${entry.rank}`}
-                fill={entry.direction === 'increases_toxicity' ? '#EF4444' : '#22C55E'}
+          <ResponsiveContainer width="100%" height={Math.max(400, features.length * 45)}>
+            <BarChart
+              data={features}
+              layout="vertical"
+              margin={{ top: 5, right: 30, left: 140, bottom: 40 }}
+            >
+              <CartesianGrid horizontal={false} strokeDasharray="4 3" opacity={0.2} />
+              <ReferenceLine x={0} stroke="#D1D5DB" strokeWidth={1.5} />
+              <XAxis
+                type="number"
+                tickFormatter={(v) => Number(v).toFixed(2)}
+                tick={{ fontSize: 10, fill: '#6B7280', fontWeight: 'bold' }}
+                label={{
+                  value: 'Reduces Toxicity ← | → Increases Toxicity',
+                  position: 'insideBottom',
+                  offset: -30,
+                  style: { fontSize: 10, fill: '#6B7280', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' },
+                }}
               />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+              <YAxis
+                dataKey="displayName"
+                type="category"
+                width={135}
+                tick={{ fontSize: 11, fill: '#374151', fontWeight: 'bold' }}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(59, 130, 246, 0.05)' }} />
+              <Bar dataKey="value" radius={[0, 4, 4, 0]} isAnimationActive={true} animationDuration={500} barSize={24}>
+                {features.map((entry) => (
+                  <Cell
+                    key={`${entry.fullName}-${entry.rank}`}
+                    fill={entry.direction === 'increases_toxicity' ? '#EF4444' : '#22C55E'}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
 
-      {/* Interpretation */}
-      <div className="mt-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
-        <p className="text-xs text-blue-900 leading-relaxed">
-          <span className="font-semibold">How to interpret:</span> Positive SHAP values (red) increase the probability of toxicity for this assay. Negative values (green) decrease it. The feature value shows the actual molecular property computed for your compound.
-        </p>
+          {/* Interpretation */}
+          <div className="mt-4 rounded-xl bg-blue-50/80 border border-blue-200/60 p-4 shadow-sm">
+            <p className="text-xs text-blue-900 leading-relaxed font-medium">
+              <span className="font-bold uppercase text-[10px] tracking-wider text-blue-800 mr-2">How to interpret:</span> 
+              Positive SHAP values (red) increase the probability of toxicity for this assay. Negative values (green) decrease it. The feature value shows the actual molecular property computed for your compound.
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 
