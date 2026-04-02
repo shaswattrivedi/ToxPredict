@@ -50,7 +50,7 @@ function MoleculeViewer({
   }, [smiles])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Molecule Structure Card */}
       <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
         {cached ? (
@@ -85,7 +85,7 @@ function MoleculeViewer({
           <div className="space-y-4">
             {structuralAlerts.map((alert, index) => {
               const formatName = (str) => str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-              const typeMap = { 'brenk': 'Brenk Library Alert (Reactive/Toxicophore)', 'BRENK': 'Brenk Library Alert (Reactive/Toxicophore)' };
+              const typeMap = { 'brenk': 'High-Risk Substructure', 'BRENK': 'High-Risk Substructure' };
               const displayType = typeMap[alert.alert_type?.toLowerCase()] || formatName(alert.alert_type || '');
               const displayName = formatName(alert.alert_name || '');
               const displayDesc = alert.description || 'Compound contains a structural motif that has been flagged as potentially toxic or reactive.';
@@ -102,9 +102,9 @@ function MoleculeViewer({
                     </svg>
                   </span>
                   <div className="flex-1 space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-col items-start gap-1.5">
                       <p className="text-base font-bold text-gray-900">{displayName}</p>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2.5 py-1 rounded-md mb-1">{displayType}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2.5 py-1 rounded-md">{displayType}</span>
                     </div>
                     <p className="text-sm font-medium text-gray-600 leading-relaxed">{displayDesc}</p>
                   </div>
