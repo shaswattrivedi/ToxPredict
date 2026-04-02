@@ -40,19 +40,24 @@ function CompoundSummary({
   narrative,
   smiles,
   cached,
-}) {
-  const styles = RISK_STYLES[overallRisk] || RISK_STYLES.Low
-  const scorePct = Math.max(0, Math.min(100, Number(overallScore || 0) * 100))
-  const riskKey = String(overallRisk || '').toUpperCase()
+    drugLikeness,
+  }) {
+    const styles = RISK_STYLES[overallRisk] || RISK_STYLES.Low
+    const scorePct = Math.max(0, Math.min(100, Number(overallScore || 0) * 100))
+    const riskKey = String(overallRisk || '').toUpperCase()
 
-  const highestAssay = useMemo(() => {
-    if (!Array.isArray(assayResults) || assayResults.length === 0) {
-      return null
-    }
-    return assayResults.reduce(
-      (max, r) => (Number(r.probability || 0) > Number(max.probability || 0) ? r : max),
-      assayResults[0],
-    )
+    const qed = Number(drugLikeness?.qed_score ?? 0)
+    const qedPercent = Math.max(0, Math.min(100, qed * 100))
+    const qedBarClass = qed > 0.6 ? 'bg-green-500' : qed > 0.4 ? 'bg-amber-500' : 'bg-red-500'
+
+    const highestAssay = useMemo(() => {
+      if (!Array.isArray(assayResults) || assayResults.length === 0) {
+        return null
+      }
+      return assayResults.reduce(
+        (max, r) => (Number(r.probability || 0) > Number(max.probability || 0) ? r : max),
+        assayResults[0],
+      )
   }, [assayResults])
 
   const nrToxic = useMemo(
@@ -78,78 +83,78 @@ function CompoundSummary({
                 Overall Risk Assessment
               </span>
               <div className="flex items-center gap-4">
-                <h2 className={`mt-1 text-5xl font-black ${riskKey === 'HIGH' ? 'text-red-500' : riskKey === 'MEDIUM' ? 'text-amber-500' : 'text-green-500'}`}>
+                <h2 className={`mt-1 text-5xl font-black ${riskKey === 'HIGH' ? 'text-red-600' : riskKey === 'MEDIUM' ? 'text-amber-600' : 'text-green-600'}`}>
                   {String(overallRisk).toUpperCase()}
                 </h2>
                 {cached ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md border border-gray-600/50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-300 shadow-sm mt-3">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-400"></div> Cached
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-600 shadow-sm mt-3">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div> Cached
                   </span>
                 ) : null}
               </div>
             </div>
 
             {/* Key Info */}
-            <div className="grid grid-cols-2 gap-6 bg-white/10 backdrop-blur-md border border-gray-600/40 p-6 rounded-2xl text-sm shadow-lg">
+            <div className={`grid grid-cols-2 gap-6 p-6 rounded-2xl text-sm shadow-md hover:shadow-lg transition-shadow border ${styles.scoreCard}`}>
               <div>
-                <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Endpoints Triggered</p>
-                <p className="text-gray-200 font-medium">
-                  <span className={`${toxicCount > 0 ? 'text-red-400 font-bold text-xl' : 'text-green-400 font-bold text-xl'}`}>{toxicCount}</span> / 12 Assays
+                <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2">Endpoints Triggered</p>
+                <p className="text-gray-800 font-medium">
+                  <span className={`${toxicCount > 0 ? 'text-red-600 font-bold text-xl' : 'text-green-600 font-bold text-xl'}`}>{toxicCount}</span> / 12 Assays
                 </p>
               </div>
               {highestAssay ? (
                 <div>
-                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Primary Concern</p>
-                  <p className="text-gray-200 font-medium">
-                    {highestAssay.display_name} <span className="text-gray-500 font-bold ml-1">({(Number(highestAssay.probability || 0) * 100).toFixed(0)}%)</span>
+                  <p className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-2">Primary Concern</p>
+                  <p className="text-gray-800 font-medium">
+                    {highestAssay.display_name} <span className="text-gray-600 font-bold ml-1">({(Number(highestAssay.probability || 0) * 100).toFixed(0)}%)</span>
                   </p>
                 </div>
               ) : null}
             </div>
             
-            <p className="text-xs font-medium text-gray-500 bg-white/60 p-2 rounded-md border border-gray-100 flex items-center gap-2">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 text-[10px] font-bold text-blue-700">i</span>
+            <p className="text-xs font-bold text-amber-800 bg-amber-50 p-3 rounded-lg border border-amber-200 flex items-center gap-2 shadow-sm mt-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-black text-amber-600">!</span>
               In vitro computational result - does not represent clinical toxicity at therapeutic doses.
             </p>
           </div>
 
           {/* Score Card */}
-          <div className="flex flex-col justify-center items-center rounded-xl bg-white/10 backdrop-blur-md border border-gray-200/60 p-6 shadow-sm">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Ensemble Score</p>
+          <div className={`flex flex-col justify-center items-center rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow border ${styles.scoreCard}`}>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-1">Ensemble Score</p>
             <div className="flex items-baseline gap-1 my-2">
               <p className={`text-5xl font-black ${styles.score}`}>{scorePct.toFixed(0)}</p>
               <p className={`text-sm font-bold ${styles.score}`}>%</p>
             </div>
 
-            <div className="mt-4 w-full grid grid-cols-2 gap-3 border-t border-gray-100 pt-4 text-center">
+            <div className={`mt-4 w-full grid grid-cols-2 gap-3 border-t pt-4 text-center ${riskKey === 'HIGH' ? 'border-red-200' : riskKey === 'MEDIUM' ? 'border-amber-200' : 'border-green-200'}`}>
               <div>
-                <p className="text-[10px] uppercase font-bold text-gray-400">Nuclear</p>
-                <p className="text-sm font-bold text-gray-800">{nrToxic}/7</p>
+                <p className="text-[10px] uppercase font-bold text-gray-600">Nuclear</p>
+                <p className="text-sm font-bold text-gray-900">{nrToxic}/7</p>
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-gray-400">Stress</p>
+                <p className="text-[10px] uppercase font-bold text-gray-600">Stress</p>
                 <p className="text-sm font-bold text-gray-800">{srToxic}/5</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-4">
-          <div className="relative h-9 overflow-visible rounded-lg border border-gray-100 bg-white/10 backdrop-blur-md">
-            <div className="flex h-full w-full overflow-hidden rounded-lg">
-              <div className="flex w-1/3 items-center justify-center bg-green-500/20 text-[11px] font-bold text-green-300">
+        <div className="mt-5">
+          <div className="relative h-10 overflow-visible rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex h-full w-full overflow-hidden rounded-xl">
+              <div className={`flex w-1/3 items-center justify-center text-xs font-bold transition-colors ${riskKey === 'LOW' ? 'bg-green-500 text-white shadow-inner' : 'bg-green-50 text-green-700'}`}>
                 LOW
               </div>
-              <div className="flex w-1/3 items-center justify-center bg-amber-500/20 text-[11px] font-bold text-amber-300 border-x border-gray-500/30">
+              <div className={`flex w-1/3 items-center justify-center text-xs font-bold border-x border-gray-200 transition-colors ${riskKey === 'MEDIUM' ? 'bg-amber-500 text-white shadow-inner' : 'bg-amber-50 text-amber-700'}`}>
                 MEDIUM
               </div>
-              <div className="flex w-1/3 items-center justify-center bg-red-500/20 text-[11px] font-bold text-red-300">
+              <div className={`flex w-1/3 items-center justify-center text-xs font-bold transition-colors ${riskKey === 'HIGH' ? 'bg-red-500 text-white shadow-inner' : 'bg-red-50 text-red-700'}`}>
                 HIGH
               </div>
             </div>
             <div
-              className={`absolute -top-3 text-xl transition-all duration-300 ${riskKey === 'LOW' ? 'text-green-400' : riskKey === 'MEDIUM' ? 'text-amber-400' : 'text-red-500'}`}
-              style={{ left: `calc(${riskKey === 'LOW' ? 16.66 : riskKey === 'MEDIUM' ? 50 : 83.33}% - 8px)` }}
+              className={`absolute -top-4 text-2xl transition-all duration-300 drop-shadow-md ${riskKey === 'LOW' ? 'text-green-800' : riskKey === 'MEDIUM' ? 'text-amber-800' : 'text-red-800'}`}
+              style={{ left: `calc(${riskKey === 'LOW' ? 16.66 : riskKey === 'MEDIUM' ? 50 : 83.33}% - 10px)` }}
               aria-label="Current ensemble score marker"
             >
               ▼
@@ -160,12 +165,11 @@ function CompoundSummary({
 
       {/* Narrative */}
       {narrative ? (
-        <section className="rounded-2xl border border-gray-600/40 bg-white/10 backdrop-blur-md p-8 shadow-sm overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-indigo-500 to-purple-500"></div>
+        <section className="rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
           <div className="flex gap-4">
-            <div className="flex-1 pl-2">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-300 mb-4">Predictive Biological Narrative</h3>
-              <ul className="text-sm leading-relaxed text-gray-200 font-medium space-y-3 list-disc marker:text-indigo-400 pl-4">
+            <div className="flex-1">
+              <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Predictive Biological Narrative</h3>
+              <ul className="text-sm leading-relaxed text-gray-800 font-medium space-y-3 list-disc marker:text-gray-400 pl-5">
                 {narrative.split('.').map(s => s.trim()).filter(Boolean).map((sentence, idx) => (
                   <li key={idx}>{sentence}.</li>
                 ))}
@@ -175,7 +179,82 @@ function CompoundSummary({
         </section>
       ) : null}
 
-      <p className="sr-only">SMILES: {smiles}</p>
+              {/* Drug-likeness Horizontal Card */}
+        <section className="rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300 mb-6">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-widest">Drug-likeness Profile</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                
+                {/* Left Side: Lipinski & QED */}
+                <div className="space-y-6">
+                  {/* Lipinski Compliance */}
+                  <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+                    <p className="text-sm font-bold text-gray-900">Lipinski Rule of Five</p>
+                    {drugLikeness?.lipinski_pass ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700 shadow-sm">
+                        <span>✓</span> Compliant
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700 shadow-sm">
+                        <span>✗</span> {(drugLikeness?.violations || []).length} Violation(s)
+                      </span>
+                    )}
+                  </div>
+
+                  {/* QED Score */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-bold text-gray-900">QED Score</p>
+                      <span className="text-lg font-bold text-gray-900">{Number(drugLikeness?.qed_score ?? 0).toFixed(3)}</span>
+                    </div>
+                    <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200 border border-gray-300 shadow-inner">
+                      <div
+                        className={`h-full rounded-full transition-all ${qedBarClass}`}
+                        style={{ width: `${qedPercent}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side: Properties Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-xl bg-white p-4 border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+                    <p className="text-xs text-gray-800 font-bold">Molecular Weight</p>
+                    <p className="mt-1 text-base font-black text-gray-900">{Number(drugLikeness?.molecular_weight ?? 0).toFixed(1)} Da</p>
+                    <p className="mt-1 text-[10px] font-medium text-gray-500">≤ 500</p>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+                    <p className="text-xs text-gray-800 font-bold">LogP</p>
+                    <p className="mt-1 text-base font-black text-gray-900">{Number(drugLikeness?.log_p ?? 0).toFixed(2)}</p>
+                    <p className="mt-1 text-[10px] font-medium text-gray-500">≤ 5</p>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+                    <p className="text-xs text-gray-800 font-bold">H-Bond Donors</p>
+                    <p className="mt-1 text-base font-black text-gray-900">{Number(drugLikeness?.h_bond_donors ?? 0)}</p>
+                    <p className="mt-1 text-[10px] font-medium text-gray-500">≤ 5</p>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+                    <p className="text-xs text-gray-800 font-bold">H-Bond Acceptors</p>
+                    <p className="mt-1 text-base font-black text-gray-900">{Number(drugLikeness?.h_bond_acceptors ?? 0)}</p>
+                    <p className="mt-1 text-[10px] font-medium text-gray-500">≤ 10</p>
+                  </div>
+                </div>
+
+              </div>
+
+              {drugLikeness?.interpretation ? (
+                <p className="mt-6 text-sm font-medium italic text-gray-700 bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+                  {drugLikeness.interpretation}
+                </p>
+              ) : null}
+
+            </div>
+          </div>
+        </section>
+
+<p className="sr-only">SMILES: {smiles}</p>
     </div>
   )
 }

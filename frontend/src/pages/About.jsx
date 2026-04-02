@@ -37,15 +37,16 @@ const FRONTEND_STACK = [
 
 function About() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 via-white to-emerald-100 text-gray-900">
+    <div className="relative min-h-screen bg-gradient-to-br from-[#1d1f3b] via-[#1a1b2e] to-[#121321] text-gray-100">
       {/* Subtle Chemical Overlay */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-60 bg-chemical-pattern mix-blend-multiply transition-opacity duration-1000" aria-hidden="true" />
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-40 bg-chemical-pattern transition-opacity duration-1000" aria-hidden="true" />
       
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
         <main className="flex-1 pt-20">
         <Container className="max-w-4xl mx-auto px-4 py-8">
+          <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 md:p-12 shadow-2xl transition-all duration-300 text-gray-900">
           <header className="mb-8">
             <h1 className="mt-3 text-4xl font-bold text-gray-900 text-center tracking-tight">About ToxPredict</h1>
             <p className="mt-2 text-base text-gray-600 text-center">
@@ -218,13 +219,13 @@ function About() {
           compounds with confirmed labels for that specific assay.
         </p>
       </section>
-        </Container>
+          </div>
+          </Container>
       </main>
-
       {/* Footer */}
-      <footer className="mt-auto shrink-0 border-t border-gray-200/60 bg-white/80 backdrop-blur-md py-8">
+      <footer className="mt-auto shrink-0 border-t border-gray-800 bg-black/20 backdrop-blur-md py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm font-medium text-gray-500">
+          <p className="text-center text-sm font-medium text-gray-400">
             ToxPredict © 2026 | Track A - CodeCure Hackathon @ IIT BHU SPIRIT
           </p>
         </div>

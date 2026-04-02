@@ -86,7 +86,7 @@ function SHAPChart({ shapFeatures, assayName, assayDisplayName }) {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="w-full rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-2xl transition-all duration-300">
       <div className="mb-6">
         <h3 className="text-lg font-bold text-gray-900">Molecular Drivers</h3>
         <p className="text-sm text-gray-600 mt-1">{assayDisplayName} — Top 10 features by SHAP importance</p>

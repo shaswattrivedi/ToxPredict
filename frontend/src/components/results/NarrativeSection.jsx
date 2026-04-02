@@ -7,7 +7,7 @@ import Card from '../ui/Card'
  */
 function NarrativeSection({ narrative, topAssay }) {
   return (
-    <Card className="border border-blue-200 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <Card className="border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start gap-4">
         <span className="mt-1 shrink-0 text-2xl">🧠</span>
         <div className="flex-1">

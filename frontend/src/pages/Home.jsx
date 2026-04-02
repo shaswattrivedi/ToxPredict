@@ -16,21 +16,23 @@ function Home() {
   const { predict, data, isLoading, isError, error } = usePrediction()
   const { data: examples } = useExamples()
   const [showResults, setShowResults] = useState(false)
+  const [scrollTrigger, setScrollTrigger] = useState(0)
   const [activeTab, setActiveTab] = useState('summary')
 
   const handleSubmit = (smiles) => {
     setActiveTab('summary')
     predict(smiles)
     setShowResults(true)
+    setScrollTrigger(prev => prev + 1)
   }
 
   useEffect(() => {
-    if (showResults) {
+    if (showResults && scrollTrigger > 0) {
       setTimeout(() => {
         document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' })
       }, 100);
     }
-  }, [showResults])
+  }, [showResults, scrollTrigger])
 
   const topAssay =
     data?.assay_results?.length > 0
@@ -44,10 +46,10 @@ function Home() {
   const srAssays = data?.assay_results?.filter((r) => r.category === 'Stress Response') || []
 
   const tabClasses = (tab) =>
-    `rounded-lg px-6 py-2 text-sm font-semibold transition ${
+    `rounded-full px-6 py-2.5 text-sm font-bold tracking-wide transition-all duration-300 ${
       activeTab === tab
-        ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-sm'
-        : 'text-gray-300 hover:bg-white/10 hover:text-white'
+        ? 'bg-[#4b3cff] text-white shadow-md'
+        : 'text-gray-300 hover:bg-white/20 hover:text-white'
     }`
 
   return (
@@ -58,29 +60,34 @@ function Home() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header title="ToxPredict" tagline="Drug Toxicity Prediction with Explainability" />
 
-        <main className={`flex-1 flex flex-col w-full pt-28 pb-12 transition-all duration-500 justify-center`}>
-        <Container className="max-w-7xl w-full flex-1 flex flex-col">
-          {/* Hero Section - Strict two-column layout */}
-          <div className={`px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center transition-all duration-700 w-full mx-auto ${!data && !isLoading && !isError ? 'my-auto' : 'mb-12'}`}>
-            <div className="text-left flex flex-col justify-center">
-              <h1 className="text-6xl md:text-7xl font-extrabold leading-tight tracking-tighter mb-4 drop-shadow-xl">
-                Drug Safety, <br/>
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Reimagined.</span>
-              </h1>
-              <p className="text-lg md:text-xl text-gray-300 mt-2 max-w-lg mb-8 leading-relaxed font-medium tracking-wide drop-shadow-sm">
-                Proactive toxicity intelligence. High-throughput molecular analysis from SMILES in seconds.
-              </p>
-            </div>
-            <div className="w-full box-system-font">
-              <InputCard
-                onSubmit={handleSubmit}
-                isLoading={isLoading}
-                examples={examples || []}
-              />
-            </div>
+        <main className={`flex-1 flex flex-col w-full transition-all duration-500`}>
+          {/* Landing viewport exactly preserved */}
+          <div className="min-h-screen flex flex-col justify-center pt-28 pb-12">
+            <Container className="max-w-7xl w-full mx-auto">
+              {/* Hero Section - Strict two-column layout */}
+              <div className="px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
+                <div className="text-left flex flex-col justify-center">
+                  <h1 className="text-6xl md:text-7xl font-extrabold leading-tight tracking-tighter mb-4 drop-shadow-xl">
+                    Drug Safety, <br/>
+                    <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Reimagined.</span>
+                  </h1>
+                  <p className="text-lg md:text-xl text-gray-300 mt-2 max-w-lg mb-8 leading-relaxed font-small tracking-wide drop-shadow-sm">
+                    Proactive toxicity intelligence. High-throughput molecular analysis from SMILES in seconds.
+                  </p>
+                </div>
+                <div className="w-full box-system-font">
+                  <InputCard
+                    onSubmit={handleSubmit}
+                    isLoading={isLoading}
+                    examples={examples || []}
+                  />
+                </div>
+              </div>
+            </Container>
           </div>
 
-          <div id="results-section" className="px-4 pb-6 sm:px-6">
+          <div id="results-section" className="px-4 pb-6 sm:px-6 min-h-screen flex flex-col pt-12">
+            <Container className="max-w-7xl w-full mx-auto">
             {/* Loading State */}
             {isLoading ? (
               <div className="space-y-8 animate-fade-in">
@@ -127,8 +134,8 @@ function Home() {
             {/* Results Content */}
             {data ? (
               <div className="space-y-6">
-                <div className="rounded-2xl border border-gray-200 bg-white/10 backdrop-blur-md p-2 shadow-lg">
-                  <div className="flex flex-wrap justify-center gap-4">
+                <div className="w-fit mx-auto rounded-full border border-white/20 bg-white/10 backdrop-blur-md p-2 shadow-lg">
+                  <div className="flex flex-wrap justify-center gap-2">
                     <button type="button" className={tabClasses('summary')} onClick={() => setActiveTab('summary')}>
                       Summary
                     </button>
@@ -189,8 +196,8 @@ function Home() {
                 ) : null}
               </div>
             ) : null}
-          </div>
-        </Container>
+          </Container>
+        </div>
       </main>
 
       {/* Footer */}
